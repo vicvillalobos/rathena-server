@@ -5,7 +5,7 @@ elif [ ! -f /rathena/char-server ]; then
 elif [ ! -f /rathena/map-server ]; then
   export runBuild=1;
 else
-  export runBuild=0;
+  export runBuild=1;
 fi
 
 if [ "${runBuild}" -eq "1" ]; then
