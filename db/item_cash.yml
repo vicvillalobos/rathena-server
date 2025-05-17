@@ -29,9 +29,9 @@
 ###########################################################################
 
 Header:
-  Type: ITEM_CASH_DB
-  Version: 1
+    Type: ITEM_CASH_DB
+    Version: 1
 
 Footer:
-  Imports:
-    - Path: db/import/item_cash.yml
+    Imports:
+        - Path: db/import/item_cash.yml

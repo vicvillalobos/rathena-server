@@ -1,0 +1,11 @@
+login_server_ip: db
+login_server_pw: ragnarok
+char_server_ip: db
+char_server_pw: ragnarok
+map_server_ip: db
+map_server_pw: ragnarok
+web_server_ip: db
+web_server_pw: ragnarok
+web_ip: db
+web_pw: ragnarok
+web_db_ip: db
