@@ -6635,32 +6635,32 @@ ACMD_FUNC(marry)
 	}
 
 	if (!pc_inventoryblank(sd)) {
-		clif_msg_color(sd, MSI_CANT_GET_ITEM_BECAUSE_COUNT, color_table[COLOR_RED]);
+		clif_msg_color( *sd, MSI_CANT_GET_ITEM_BECAUSE_COUNT, color_table[COLOR_RED] );
 		return -1;
 	}
 
 	if (!pc_inventoryblank(pl_sd)) {
-		clif_msg_color(pl_sd, MSI_CANT_GET_ITEM_BECAUSE_COUNT, color_table[COLOR_RED]);
+		clif_msg_color( *pl_sd, MSI_CANT_GET_ITEM_BECAUSE_COUNT, color_table[COLOR_RED] );
 		return -1;
 	}
 
 	uint32 w = 0;
 
 	if (w = itemdb_weight((sd->status.sex) ? WEDDING_RING_M : WEDDING_RING_F) && w + sd->weight > sd->max_weight) {
-		clif_msg_color(sd, MSI_CANT_GET_ITEM_BECAUSE_WEIGHT, color_table[COLOR_RED]);
+		clif_msg_color( *sd, MSI_CANT_GET_ITEM_BECAUSE_WEIGHT, color_table[COLOR_RED] );
 		return -1;
 	}
 
 	if (w = itemdb_weight((pl_sd->status.sex) ? WEDDING_RING_M : WEDDING_RING_F) && w + pl_sd->weight > pl_sd->max_weight) {
-		clif_msg_color(pl_sd, MSI_CANT_GET_ITEM_BECAUSE_WEIGHT, color_table[COLOR_RED]);
+		clif_msg_color( *pl_sd, MSI_CANT_GET_ITEM_BECAUSE_WEIGHT, color_table[COLOR_RED] );
 		return -1;
 	}
 
 	if (pc_marriage(sd, pl_sd)) {
 		clif_displaymessage(fd, msg_txt(sd,1173)); // They are married... wish them well.
-		clif_wedding_effect(&pl_sd->bl); //wedding effect and music [Lupus]
+		clif_wedding_effect( pl_sd->bl );
 		if( pl_sd->bl.m != sd->bl.m )
-			clif_wedding_effect(&sd->bl);
+			clif_wedding_effect( sd->bl );
 		getring(sd); // Auto-give named rings (Aru)
 		getring(pl_sd);
 		return 0;
@@ -6796,7 +6796,7 @@ ACMD_FUNC(changegm)
 
 	if( !battle_config.guild_leaderchange_woe && is_agit_start() ){
 #if PACKETVER >= 20151001
-		clif_msg(sd, MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME);
+		clif_msg( *sd, MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_IN_SIEGE_TIME );
 #else
 		clif_displaymessage(fd, msg_txt(sd,1513)); // Currently in WoE hours, unable to delegate Guild leader
 #endif
@@ -6805,7 +6805,7 @@ ACMD_FUNC(changegm)
 
 	if( battle_config.guild_leaderchange_delay && DIFF_TICK(time(nullptr),sd->guild->guild.last_leader_change) < battle_config.guild_leaderchange_delay ){
 #if PACKETVER >= 20151001
-		clif_msg(sd, MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_NOT_TIME);
+		clif_msg( *sd, MSI_IMPOSSIBLE_CHANGE_GUILD_MASTER_NOT_TIME );
 #else
 		clif_displaymessage(fd, msg_txt(sd,1514)); // You have to wait for a while before delegating a new Guild leader
 #endif
@@ -7503,7 +7503,7 @@ ACMD_FUNC(pettalk)
 			}
 			sd->emotionlasttime = time(nullptr);
 
-			clif_emotion(&pd->bl, i);
+			clif_emotion( pd->bl, static_cast<emotion_type>( i ) );
 			return 0;
 		}
 	}
@@ -7840,7 +7840,7 @@ ACMD_FUNC(mute)
 		status_change_end(&pl_sd->bl, SC_NOCHAT);
 	}
 
-	clif_GM_silence(sd, pl_sd, (manner > 0 ? 1 : 0));
+	clif_GM_silence( *sd, *pl_sd, manner > 0 );
 
 	return 0;
 }
@@ -8052,74 +8052,83 @@ ACMD_FUNC(mobinfo)
 		// drops
 		clif_displaymessage(fd, msg_txt(sd,1245)); //  Drops:
 		strcpy(atcmd_output, " ");
-		uint32 j = 0;
-		int32 drop_modifier = 100;
+
+		if( mob->dropitem.empty() ){
+			clif_displaymessage(fd, msg_txt(sd,1246)); // This monster has no drops.
+		}else{
+			uint32 j = 0;
+			int32 drop_modifier = 100;
 #ifdef RENEWAL_DROP
-		if( battle_config.atcommand_mobinfo_type ){
-			drop_modifier = pc_level_penalty_mod( sd, PENALTY_DROP, mob );
-		}
+			if( battle_config.atcommand_mobinfo_type ){
+				drop_modifier = pc_level_penalty_mod( sd, PENALTY_DROP, mob );
+			}
 #endif
 
-		for (i = 0; i < MAX_MOB_DROP_TOTAL; i++) {
-
-			if (mob->dropitem[i].nameid == 0 || mob->dropitem[i].rate < 1)
-				continue;
-
-			std::shared_ptr<item_data> id = item_db.find(mob->dropitem[i].nameid);
-
-			if (id == nullptr)
-				continue;
-
-			int32 droprate = mob_getdroprate( &sd->bl, mob, mob->dropitem[i].rate, drop_modifier );
-
-			sprintf(atcmd_output2, " - %s  %02.02f%%", item_db.create_item_link( id ).c_str(), (float)droprate / 100);
-			strcat(atcmd_output, atcmd_output2);
-			if (++j % 3 == 0) {
-				clif_displaymessage(fd, atcmd_output);
-				strcpy(atcmd_output, " ");
-			}
-		}
-		if (j == 0)
-			clif_displaymessage(fd, msg_txt(sd,1246)); // This monster has no drops.
-		else if (j % 3 != 0)
-			clif_displaymessage(fd, atcmd_output);
-		// mvp
-		if( mob->get_bosstype() == BOSSTYPE_MVP ){
-			float mvppercent, mvpremain;
-			sprintf(atcmd_output, msg_txt(sd,1247), mob->mexp); //  MVP Bonus EXP:%llu
-			clif_displaymessage(fd, atcmd_output);
-			strcpy(atcmd_output, msg_txt(sd,1248)); //  MVP Items:
-			mvpremain = 100.0; //Remaining drop chance for official mvp drop mode
-			j = 0;
-			for (i = 0; i < MAX_MVP_DROP_TOTAL; i++) {
-
-				if (mob->mvpitem[i].nameid == 0)
+			for( const std::shared_ptr<s_mob_drop>& entry : mob->dropitem ){
+				if (entry->nameid == 0 || entry->rate < 1)
 					continue;
 
-				std::shared_ptr<item_data> id = item_db.find(mob->mvpitem[i].nameid);
+				std::shared_ptr<item_data> id = item_db.find(entry->nameid);
 
 				if (id == nullptr)
 					continue;
 
-				//Because if there are 3 MVP drops at 50%, the first has a chance of 50%, the second 25% and the third 12.5%
-				mvppercent = (float)mob->mvpitem[i].rate * mvpremain / 10000.0f;
-				if(battle_config.item_drop_mvp_mode == 0) {
-					mvpremain -= mvppercent;
-				}
-				if (mvppercent > 0) {
-					j++;
-					if (j == 1) {
-						sprintf(atcmd_output2, " %s  %02.02f%%", item_db.create_item_link( id ).c_str(), mvppercent);
-					} else {
-						sprintf(atcmd_output2, " - %s  %02.02f%%", item_db.create_item_link( id ).c_str(), mvppercent);
-					}
-					strcat(atcmd_output, atcmd_output2);
+				int32 droprate = mob_getdroprate( &sd->bl, mob, entry->rate, drop_modifier );
+
+				sprintf(atcmd_output2, " - %s  %02.02f%%", item_db.create_item_link( id ).c_str(), (float)droprate / 100);
+				strcat(atcmd_output, atcmd_output2);
+				if (++j % 3 == 0) {
+					clif_displaymessage(fd, atcmd_output);
+					strcpy(atcmd_output, " ");
 				}
 			}
-			if (j == 0)
-				clif_displaymessage(fd, msg_txt(sd,1249)); // This monster has no MVP prizes.
-			else
+
+			if( j % 3 != 0 ){
 				clif_displaymessage(fd, atcmd_output);
+			}
+		}
+
+		// mvp
+		if( mob->get_bosstype() == BOSSTYPE_MVP ){
+			sprintf(atcmd_output, msg_txt(sd,1247), mob->mexp); //  MVP Bonus EXP:%llu
+			clif_displaymessage(fd, atcmd_output);
+			clif_displaymessage(fd, msg_txt(sd,1248)); //  MVP drops:
+			strcpy(atcmd_output, " ");
+
+			if( mob->mvpitem.empty() ){
+				clif_displaymessage(fd, msg_txt(sd,1249)); // This monster has no MVP drops.
+			}else{
+				float mvpremain = 100.0; //Remaining drop chance for official mvp drop mode
+				uint32 j = 0;
+
+				for( const std::shared_ptr<s_mob_drop>& entry : mob->mvpitem ){
+					if (entry->nameid == 0)
+						continue;
+
+					std::shared_ptr<item_data> id = item_db.find(entry->nameid);
+
+					if (id == nullptr)
+						continue;
+
+					//Because if there are 3 MVP drops at 50%, the first has a chance of 50%, the second 25% and the third 12.5%
+					float mvppercent = (float)entry->rate * mvpremain / 10000.0f;
+					if(battle_config.item_drop_mvp_mode == 0) {
+						mvpremain -= mvppercent;
+					}
+					if (mvppercent > 0) {
+						sprintf(atcmd_output2, " - %s  %02.02f%%", item_db.create_item_link( id ).c_str(), mvppercent);
+						strcat(atcmd_output, atcmd_output2);
+						if (++j % 3 == 0) {
+							clif_displaymessage(fd, atcmd_output);
+							strcpy(atcmd_output, " ");
+						}
+					}
+				}
+
+				if( j % 3 != 0 ){
+					clif_displaymessage(fd, atcmd_output);
+				}
+			}
 		}
 	}
 	return 0;
@@ -8268,7 +8277,7 @@ ACMD_FUNC(hommutate)
 	if (m_class != -1 && m_id != -1 && m_class&HOM_EVO && m_id&HOM_S && sd->hd->homunculus.level >= 99) {
 		hom_mutate(sd->hd, homun_id);
 	} else {
-		clif_emotion(&sd->hd->bl, ET_SWEAT);
+		clif_emotion( sd->hd->bl, ET_SWEAT );
 	}
 	return 0;
 }
