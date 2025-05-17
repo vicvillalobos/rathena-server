@@ -8454,6 +8454,7 @@ Body:
       Target: Enemy
       Flag:
         Song: true
+        NoOverlap: true
   - Id: 318
     Name: BA_FROSTJOKER
     Description: Unbarring Octave
@@ -8746,6 +8747,7 @@ Body:
       Target: Enemy
       Flag:
         Dance: true
+        NoOverlap: true
   - Id: 326
     Name: DC_SCREAM
     Description: Dazzler
@@ -11283,6 +11285,7 @@ Body:
     Element: Weapon
     SplashArea: 1
     Knockback: 2
+    Duration1: 5000
     Duration2: 2000
     Requires:
       SpCost:

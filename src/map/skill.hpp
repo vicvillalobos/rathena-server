@@ -43,6 +43,8 @@ class status_change;
 #define SKILL_ALTDMG_FLAG 0x10
 /// Make skill ignore requirement consumption [Muh]
 #define SKILL_NOCONSUME_REQ 0x20
+/// Make skill consume ammo, but not the unit [Muh]
+#define UNIT_NOCONSUME_AMMO 0x40
 
 /// Constants to identify a skill's nk value (damage properties)
 /// The NK value applies only to non INF_GROUND_SKILL skills
@@ -567,7 +569,7 @@ int32 skill_strip_equip(struct block_list *src,struct block_list *bl, uint16 whe
 // Skills unit
 std::shared_ptr<s_skill_unit_group> skill_id2group(int32 group_id);
 std::shared_ptr<s_skill_unit_group> skill_unitsetting(struct block_list* src, uint16 skill_id, uint16 skill_lv, int16 x, int16 y, int32 flag);
-struct skill_unit *skill_initunit (std::shared_ptr<s_skill_unit_group> group, int32 idx, int32 x, int32 y, int32 val1, int32 val2, bool hidden);
+skill_unit* skill_initunit(std::shared_ptr<s_skill_unit_group> group, int32 idx, int32 x, int32 y, int32 val1, int32 val2, bool hidden, int32 range, t_tick limit);
 int32 skill_delunit(struct skill_unit *unit);
 std::shared_ptr<s_skill_unit_group> skill_initunitgroup(struct block_list* src, int32 count, uint16 skill_id, uint16 skill_lv, int32 unit_id, t_tick limit, int32 interval);
 int32 skill_delunitgroup_(std::shared_ptr<s_skill_unit_group> group, const char* file, int32 line, const char* func);
@@ -2347,7 +2349,6 @@ enum e_skill {
 
 	NW_THE_VIGILANTE_AT_NIGHT_GUN_GATLING,
 	NW_THE_VIGILANTE_AT_NIGHT_GUN_SHOTGUN,
-	SS_FUUMAKOUCHIKU_BLASTING,
 
 	SS_FOUR_CHARM = 5499,
 	NW_WILD_SHOT,
@@ -2732,8 +2733,8 @@ enum e_skill_unit_id : uint16 {
 	UNT_SHINKIROU, // Mirage
 	UNT_JACK_FROST_NOVA,
 	UNT_GROUND_GRAVITATION,
-
-	UNT_KUNAIWAIKYOKU = 298, // Kunai - Distortion
+	UNT_KUNAIKAITEN, // Shows Nothing
+	UNT_KUNAIWAIKYOKU, // Kunai - Distortion
 
 	UNT_STAR_BURST = 2409,
 
