@@ -45,8 +45,7 @@ Main:
 		"^B53F05> Warp a Dungeon's^000000",
 		"^696969> Warp a Field's^000000",
 		"^2E64FE> Mercado de Merchants^000000",
-		"^7401DF> Zonas Especiales^000000",
-		"[ ^A10015Dead Branch Room's^000000 ]")){
+		"^7401DF> Zonas Especiales^000000")){
 				case 1:
 					if (warpmap$ == "") 
 					{ 
@@ -1105,94 +1104,6 @@ L_noItems:
 						case 2:
 							warp "ayothaya",151,161;
 							close;
-					}
-				case 7:
-				DeadBranchStuff:
-					set .@DBuser1,getmapusers("pvp_n_1-1");
-					set .@DBmob1,mobcount("pvp_n_1-1");
-					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "Bienvenido a nuestras salas de Dead/Bloody Branch. En nuestras salas podr�s usar las branchs libremente.";
-					next;
-					switch (select(
-						"^A70000Cuarto p�blico^000000 ^5FAE06[^000000 "+.@DBuser1+"^000000 ^5FAE06] [^000000^FF4500 "+ getmapmobs("guild_vs5") +" ^5FAE06]^000000",
-						"^708090Registrar^000000 o ^A70000Entrar^000000 al Bloody Branch Room.",
-						"Regresar.")){
-							case 1:
-								mes "[ ^0770E9Warper xRO^000000 ]";
-								mes "Si entras al cuarto p�blico no nos hacemos cargo si alg�n usuario te roba el mob (monstruo).";
-								close2;
-								warp "pvp_n_1-1",0,0;
-								end;
-							case 2:
-								set .@ins_mas,getpartyleader(getcharid(1),2);
-								set .@md_name$,"Dead Branch Room";
-								if (has_instance("1@dbroom") == "") 
-								{
-									if (getcharid(0) == .@ins_mas )
-									{
-										mes "[ ^0770E9Warper xRO^000000 ]";
-										mes "Reservar una sala privada te costar� ^ff0000" + .@DBCost + " Cash Points^000000.";
-										next;
-										if (#CASHPOINTS < .@DBCost)
-										{
-											mes "[ ^0770E9Warper xRO^000000 ]";
-											mes "Lo siento pero no tienes el Cash necesario para rentar el cuarto.";
-											next;
-											goto DeadBranchStuff;
-											close;
-										}
-										mes "[ ^0770E9Warper xRO^000000 ]";
-										mes "El tiempo de renta son ^FF33003 Horas^000000 y los personajes NO podr�n estar fuera de ella m�s de ^FF330015 minutos^000000, de lo contrario la sala se cerrar� y tendr�n que registrar una nueva.";
-										next;
-										mes "[ ^0770E9Warper xRO^000000 ]";
-										mes "^A70000Importante:^000000 Para que tus compa�eros puedan entrar a tu sala tienen que estar en tu party. Por favor, no elimines tu party o la sala quedar� desactivada.";
-										next;
-										mes "[ ^0770E9Warper xRO^000000 ]";
-										mes "�Quieres activar una sala Bloody Branch Room?";
-										switch(select("^AE0606Activar ^000000"+.@md_name$ + ":Quiz�s en otra ocasi�n.")) 
-										{
-											case 1: 
-												set .@instance, instance_create(.@md_name$,getcharid(1));
-												if( .@instance < 0 )
-												{
-													mes "�Fallo en la creaci�n de la sala!";
-													close;
-												}
-												if( instance_attachmap("1@dbroom", .@instance) == "" )
-												{
-													instance_destroy(.@instance);
-													mes "�Fallo en colocar el mapa!";
-													close;
-												}
-												instance_attach(.@instance);
-												instance_set_timeout(10800,900,.@instance);
-												instance_init(.@instance);
-												set #CASHPOINTS,#CASHPOINTS - .@DBCost;
-												mes "^AE0606Listo, ya tienes tu sala Bloody Branch Room.^000000";
-												next;
-												mes "[ ^0770E9Warper xRO^000000 ]";
-												mes "Para ingresar en la sala Bloody Branch Room vuelve a hablar conmigo y te llevar�.";
-												mes "Gracias por usar nuestro sistema Bloody Branch Room y disfruta de tu estancia en xRO.";
-												next;
-												goto DeadBranchStuff;
-												close;
-											case 2:
-												goto Main;
-												end;
-										}
-									} else {
-										mes "[ ^0770E9Warper xRO^000000 ]";
-										mes "^AE0606Lo siento pero s�lo el lider de la party puede reservar la Bloody Branch Room.^000000";
-										next;
-										goto Main;
-										close;
-									}
-								}
-								warp "1@dbroom",106,96;
-								end;
-							case 3:
-								next;
-								goto Main;
 					}
 	}
 S_CheckVar:
