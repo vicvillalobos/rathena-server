@@ -1,2 +1,4 @@
 login_ip: login
 char_ip: 127.0.0.1
+pincode_enabled: no
+allowed_job_flag: 1
