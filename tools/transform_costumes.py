@@ -55,15 +55,18 @@ myresult = mycursor.fetchall()
 # Print the first 10 rows
 try:
     for row in myresult:
-        item = ItemRenewal(*row)
-        print(item)
-        # Generate the insert statement for the pre-renewal database
-        insert_statement = item.generate_prerenewal_insert()
-        print(insert_statement)
-        # Execute the insert statement
-        mycursor.execute(insert_statement[0], insert_statement[1])
-        # Commit the changes to the database
-        
+        try:
+            item = ItemRenewal(*row)
+            print(item)
+            # Generate the insert statement for the pre-renewal database
+            insert_statement = item.generate_prerenewal_insert()
+            print("Inserting...")
+            # Execute the insert statement
+            mycursor.execute(insert_statement[0], insert_statement[1])
+            # Commit the changes to the database
+        except Exception as ee:
+            print("Error while inserting data into MySQL:", ee)
+            # Rollback in case there is any error        
     mydb.commit()
 except Exception as e:
     print("Error while inserting data into MySQL:", e)
