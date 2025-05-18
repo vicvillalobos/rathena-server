@@ -56,7 +56,7 @@ mycursor = mydb.cursor()
 mycursor.execute("USE ragnarok")
 
 # Select all costume items from renewal database
-mycursor.execute("SELECT id, name_aegis, name_english, type, subtype, price_buy, price_sell, weight, location_costume_head_top, location_costume_head_mid, location_costume_head_low, location_costume_garment, view FROM `item_db_re` WHERE location_costume_head_top IS NOT NULL OR location_costume_head_mid IS NOT NULL OR location_costume_head_low IS NOT NULL OR location_costume_garment IS NOT NULL")
+mycursor.execute("SELECT id, name_aegis, name_english, type, subtype, price_buy, price_sell, weight, location_costume_head_top, location_costume_head_mid, location_costume_head_low, location_costume_garment, view, equip_script, unequip_script FROM `item_db_re` WHERE location_costume_head_top IS NOT NULL OR location_costume_head_mid IS NOT NULL OR location_costume_head_low IS NOT NULL OR location_costume_garment IS NOT NULL")
 
 # Fetch all rows
 myresult = mycursor.fetchall()
