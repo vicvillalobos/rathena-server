@@ -1,4 +1,5 @@
-	//===== eAthena Script =========================================================
+//!rathena
+//===== eAthena Script =========================================================
 //= Warper Editado Para X-RO
 //===== By: ====================================================================
 //= KoKe
@@ -12,7 +13,7 @@
 //=	2.0	-	17/01/12
 //=	- Remake completo del npc
 //=		- Agregado configuracion mas compleja pero eficiente para los warp
-//=		- Dead Branch room ahora es un instance ( 3 a�os planeandolo por fin? )
+//=		- Dead Branch room ahora es un instance ( 3 años planeandolo por fin? )
 //=		- Actualizado total del npc
 //=	2.1	-	19/01/12
 //=	- Agregados los fields faltantes
@@ -37,7 +38,7 @@ Main:
 	callsub S_CheckVar;
 	mes "[ ^0770E9Warper xRO^000000 ]";
 	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
-	mes "�A d�nde quieres que te lleve?";
+	mes "¿A dónde quieres que te lleve?";
 	next;
 	switch (select(
 		"^DF6F00Volver a [^000000 ^0066FF"+warpmapN$+"^000000 ^DF6F00]^000000",
@@ -49,14 +50,14 @@ Main:
 				case 1:
 					if (warpmap$ == "") 
 					{ 
-						mes "No has visitado ning�n mapa antes.";
+						mes "No has visitado ningún mapa antes.";
 						close; 
 					}
 					warp ""+warpmap$+"",warpmapx,warpmapy;
 					end;
 				case 2:
 					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "�A qu� ciudad quieres ir?";
+					mes "¿A qué ciudad quieres ir?";
 					setarray .@WCityN$[1],"Prontera (Capital de xRO)","Alberta","Aldebaran","Amatsu","Ayothaya","Brasilis","Comodo","Dicastes","Einbech (Mining Village)","Einbroch","Geffen","Gonryun","Hugel","Izlude","Jawaii","Lighthalzen","Louyang","Lutie","Manuk","Midgarts Expedition Camp","Morroc","Moscovia","Nameless Island","Niflheim","Payon","Rachel","Splendide","Thor Camp","Umbala","Veins","Yuno","Dewata","Malagno Island","Bifrost","Discastes";
 					setarray .@WCityM$[1],                     "prontera","alberta","aldebaran","amatsu","ayothaya","brasilis","comodo","dicastes01",                 "einbech","einbroch","geffen","gonryun","hugel","izlude","jawaii","lighthalzen","louyang","xmas","manuk",                "mid_camp","morocc","moscovia",     "nameless_n","niflheim","payon","rachel","splendide","thor_camp","umbala","veins","yuno","dewata",      "malangdo",   "mora","dicastes01";
 					setarray .@WCityX[1],                             155,       49,        140,     224,       208,       192,     189,       197,                        70,        64,     119,      160,     96,     128,     213,          158,      218,    147,    260,                       219,     156,       225,              256,        85,    152,     130,        200,        254,     145,    216,   157,     200,             180,      108,         198;
@@ -860,7 +861,7 @@ L_noItems:
 					callsub S_CheckVar;
 					setarray .@WFildL$[1],"Amatsu Field","Ayothaya Fields","Brasilis Field","Comodo Fields","Discastes Fields","Einbroch Fields","Geffen Fields","Gonryun Field","Hugel Fields","Lighthalzen Fields","Louyang Field","Lutie Field","Manuk Fields","Mjolnir Fields","Niflheim Fields","Odin Temple","Payon Forests","Prontera Fields","Rachel Fields","Sograt Deserts","Splendide Fields","Umbala Fields","Veins Fields","Yuno Fields";
 					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "Elige la field (campo) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto m�s alto sea el nivel, m�s dif�cil ser�. ";
+					mes "Elige la field (campo) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto más alto sea el nivel, más difícil será. ";
 					set .@Menu$, "";
 					for( set .@i, 1; .@i < getarraysize(.@WFildL$); set .@i, .@i + 1 )
 						set .@Menu$, .@Menu$ + " ^FF3300" + .@WFildL$[.@i] + "^000000:";
@@ -1094,7 +1095,7 @@ L_noItems:
 					close;
 				case 6:
 					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "�A qu� zona especial (custom) quieres ir?";
+					mes "¿A qué zona especial (custom) quieres ir?";
 					switch (select(
 							"- ^FF9900x^000000^0099FFRO^000000 ^0033FFCash Shop^000000",
 							"- ^CC3300Mercado de NPC^000000")){
@@ -1131,7 +1132,7 @@ function	script	LastMapSave	{
 
 1@dbroom,18,185,3	script	Warper xRO::DBexit	831,{
 	mes "^[ ^0770E9Warper xRO^000000 ]";
-	mes "�Quieres regresar a "+getsavepoint(0)+"?";
+	mes "¿Quieres regresar a "+getsavepoint(0)+"?";
 	next;
 	if(select("Si:Mejor No") == 2){
 		close;
@@ -1147,7 +1148,7 @@ OnTouch:
 	end;
 }
 
-1@dbroom,20,168,1	script	Se�al::DBSignal	835,{
+1@dbroom,20,168,1	script	Señal::DBSignal	835,{
 	end;
 OnInit:
 	waitingroom "Centro del mapa Por aqui",0;
