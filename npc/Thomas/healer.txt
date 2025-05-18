@@ -1,6 +1,5 @@
 prontera,151,187,6	script	Healer#01::Buffer	501,5,5,{
 OnTouch:
-	atcommand "@alive";
 	sc_start 32,  240000, 10;  // Increase Agi
 	sc_start 30, 240000, 10; // Blessing
 	percentheal 105,105; 
