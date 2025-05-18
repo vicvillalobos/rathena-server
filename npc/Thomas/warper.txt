@@ -35,29 +35,27 @@ Main:
 	percentheal 100,100;
 	set .@DBCost,1000;
 	callsub S_CheckVar;
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
-	mes "�A d�nde quieres que te lleve?";
+	mes "¿A dónde quieres que te lleve?";
 	next;
 	switch (select(
 		"^DF6F00Volver a [^000000 ^0066FF"+warpmapN$+"^000000 ^DF6F00]^000000",
 		"^74B221> Warp a Ciudades^000000",
 		"^B53F05> Warp a Dungeon's^000000",
-		"^696969> Warp a Field's^000000",
-		"^2E64FE> Mercado de Merchants^000000",
-		"^7401DF> Zonas Especiales^000000")){
+		"^696969> Warp a Field's^000000")){
 				case 1:
 					if (warpmap$ == "") 
 					{ 
-						mes "No has visitado ning�n mapa antes.";
+						mes "No has visitado ningún mapa antes.";
 						close; 
 					}
 					warp ""+warpmap$+"",warpmapx,warpmapy;
 					end;
 				case 2:
-					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "�A qu� ciudad quieres ir?";
-					setarray .@WCityN$[1],"Prontera (Capital de xRO)","Alberta","Aldebaran","Amatsu","Ayothaya","Brasilis","Comodo","Dicastes","Einbech (Mining Village)","Einbroch","Geffen","Gonryun","Hugel","Izlude","Jawaii","Lighthalzen","Louyang","Lutie","Manuk","Midgarts Expedition Camp","Morroc","Moscovia","Nameless Island","Niflheim","Payon","Rachel","Splendide","Thor Camp","Umbala","Veins","Yuno","Dewata","Malagno Island","Bifrost","Discastes";
+					mes "[ ^0770E9Warper VictoRO^000000 ]";
+					mes "¿A qué ciudad quieres ir?";
+					setarray .@WCityN$[1],"Prontera (Capital de VictoRO)","Alberta","Aldebaran","Amatsu","Ayothaya","Brasilis","Comodo","Dicastes","Einbech (Mining Village)","Einbroch","Geffen","Gonryun","Hugel","Izlude","Jawaii","Lighthalzen","Louyang","Lutie","Manuk","Midgarts Expedition Camp","Morroc","Moscovia","Nameless Island","Niflheim","Payon","Rachel","Splendide","Thor Camp","Umbala","Veins","Yuno","Dewata","Malagno Island","Bifrost","Discastes";
 					setarray .@WCityM$[1],                     "prontera","alberta","aldebaran","amatsu","ayothaya","brasilis","comodo","dicastes01",                 "einbech","einbroch","geffen","gonryun","hugel","izlude","jawaii","lighthalzen","louyang","xmas","manuk",                "mid_camp","morocc","moscovia",     "nameless_n","niflheim","payon","rachel","splendide","thor_camp","umbala","veins","yuno","dewata",      "malangdo",   "mora","dicastes01";
 					setarray .@WCityX[1],                             155,       49,        140,     224,       208,       192,     189,       197,                        70,        64,     119,      160,     96,     128,     213,          158,      218,    147,    260,                       219,     156,       225,              256,        85,    152,     130,        200,        254,     145,    216,   157,     200,             180,      108,         198;
 					setarray .@WCityY[1],                             183,      246,        117,     299,       199,       217,     149,       196,                        95,       200,      59,      121,    145,     140,     230,           92,      103,    134,    175,                       238,      93,       193,              215,       154,     75,     137,        153,         90,     155,    123,    51,     178,             129,       98,         189;	
@@ -75,17 +73,14 @@ Main:
 				case 3:
 				Main_dun:
 					callsub S_CheckVar;				
-					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "[ ^0770E9Warper VictoRO^000000 ]";
 					mes "					";
 					mes "Elige la dungeon (mazmorra) al que quieres ir.";
-					next;
-					mes "Recuerda: Solo puedes acceder a los primeros pisos, si quieres ir al piso MvP tendras que pagar:";
-					mes "^FF0000>> x1 MvP Warper Ticket ^000000 ";
 					next;
 					menu "Abbey, Cursed Dungeon",D_Abbey,"Abyss Lakes",D_Abyss,"Amatsu Dungeon",D_Amatsu,"Anthell",D_Anthell,"Ayothaya Dungeon",D_Ayothaya,"Beach Dungeon",D_Beach,"Bio Laboratory",D_Bio,"Brasilis Dungeon",D_Brasilis,"Byalan Dungeon",D_Byalan,"Clock Tower",D_Clock,"Coal Mines",D_Coal,"Culverts",D_Culverts,"Dewata Dungeon",D_Dewata,"Einbroch Dungeon",D_Ein,"Endless Tower",D_Endless,"Gefenia",D_Geffenia,"Geffen Dungeon",D_Geffen,"Glast Heim",D_Glast,"Gonryun Dungeon",D_Gonryun,"Hidden Dungeon",D_Hidden,"Ice Cave",D_Ice,"Juperos Dungeon",D_Juperos,"Kiel Dungeon",D_Kiel,"Lighthalzen Dungeon",D_Light,"Louyang Dungeon",D_Louyang,"Malangdo Dungeon",D_Malangdo,"Magma Dungeon",D_Magma,"Moscovia Dungeon",D_Moscovia,"Nidhoggur's Dungeon",D_Nyd1,"Nidhoggur's Nest",D_Nyd2,"Orc Dungeon",D_Orc,"Payon Dungeon",D_Payon,"Pyramids",D_Pyramids,"Rachel Sanctuary",D_Rachel,"Scaraba Hole Dungeon",D_Scaraba,"Sphinx",D_Sphinx,"Sunken Ship",D_Sunken,"Thanatos Tower",D_Thana,"Thor Volcano",D_Thor,"Toy Factory",D_Toy,"Turtle Dungeon",D_Turtle,"Umbala Dungeon",D_Umbala;
 
 D_Abbey:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
@@ -96,26 +91,19 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "abbey02",150,11;
+    callfunc "LastMapSave";
+	set warpmapN$, "Abbey 2";
 	end;
 case 3:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "abbey03",120,10;
+    callfunc "LastMapSave";
+	set warpmapN$, "Abbey 3";
 	end;
-
 }
 
 D_Abyss:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -126,17 +114,14 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "abyss_03",116,28;
+    callfunc "LastMapSave";
+	set warpmapN$, "Abyss 3";
 	end;
 }
 
 D_Amatsu:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -147,17 +132,14 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "ama_dun03",120,14;
+    callfunc "LastMapSave";
+	set warpmapN$, "Amatsu Dungeon 3";
 	end;
 }
 
 D_Anthell:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -168,17 +150,14 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "anthell02",168,170;
+    callfunc "LastMapSave";
+	set warpmapN$, "Anthell 2";
 	end;
 }
 
 D_Ayothaya:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -189,38 +168,31 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "ayo_dun02",24,26;
+    callfunc "LastMapSave";
 	end;
 }
 
 D_Beach:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1 ^FF0000[MvP]^000000:2")) {
 case 1:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
 	warp "beach_dun01",266,67;
+    callfunc "LastMapSave";
+	set warpmapN$, "Beach Dungeon 1";
 	end;
 
 case 2:
 	warp "beach_dun02",255,244;
 	callfunc "LastMapSave";
-	set warpmapN$, "Beach Dungeon, North";
+	set warpmapN$, "Beach Dungeon 2";
 	end;
 }
 
 D_Bio:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
@@ -231,26 +203,20 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
 	warp "lhz_dun02",150,18;
 	end;
 case 3:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "lhz_dun03",140,134;
 	end;
 
 }
 
 D_Brasilis:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -261,11 +227,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "ayo_dun02",262,262;
 	end;
 }
@@ -291,7 +255,7 @@ D_Coal:
 
 
 D_Culverts:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:4 ^FF0000[MvP]^000000")) {
@@ -302,26 +266,22 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "prt_sewb04",100,92;
 	end;
 }
 
 D_Dewata:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1 ^FF0000[MvP]^000000:2")) {
 case 1:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "dew_dun01",176,86;
 	end;
 
@@ -333,7 +293,7 @@ case 2:
 }
 
 D_Ein:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -344,11 +304,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "ein_dun02",287,287;
 	end;
 }
@@ -366,16 +324,14 @@ D_Geffenia:
 	end;
 
 D_Geffen:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1 ^FF0000[MvP]^000000:2:3 ^FF0000[MvP]^000000")) {
 case 1:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "gef_dun01",104,99;
 	end;
 
@@ -386,11 +342,9 @@ case 2:
 	set warpmapN$, "Geffen Dungeon 2";
 	end;
 case 3:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "gef_dun03",106,132;
 	end;
 
@@ -398,7 +352,7 @@ case 3:
 }
 
 D_Glast:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("Glast Heim - Entrance:Glast Heim - Churchyard ^FF0000[MvP]^000000")) {
@@ -409,16 +363,14 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "gl_chyard",147,18;
 	end;
 }
 D_Gonryun:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -429,17 +381,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "gon_dun03",68,16;
 	end;
 }
 
 D_Hidden:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -450,17 +400,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "prt_maze03",23,8;
 	end;
 }
 
 D_Ice:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -471,17 +419,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "ice_dun03",149,22;
 	end;
 }
 
 D_Juperos:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -492,18 +438,16 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "juperos_03",149,22;
 	callfunc "LastMapSave";
 	end;
 }
 
 D_Kiel:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -514,17 +458,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "kh_dun02",40,199;
 	end;
 }
 
 D_Light:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
@@ -535,26 +477,22 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "lhz_dun02",150,18;
 	end;
 case 3:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "lhz_dun03",140,134;
 	end;
 
 }
 
 D_Louyang:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -565,11 +503,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "lou_dun03",165,41;
 	end;
 }
@@ -587,7 +523,7 @@ D_Magma:
 	end;
 
 D_Moscovia:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -598,11 +534,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "mosk_dun03",31,135;
 	end;
 }
@@ -614,7 +548,7 @@ D_Nyd1:
 	end;
 
 D_Nyd2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -625,11 +559,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "2@nyd",200,9;
 	end;
 }
@@ -641,7 +573,7 @@ D_Orc:
 	end;
 
 D_Payon:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:5 ^FF0000[MvP]^000000")) {
@@ -652,17 +584,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "pay_dun04",195,200;
 	end;
 }
 
 D_Pyramids:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("Inside Pyramids F1:Inside Pyramids F4 ^FF0000[MvP]^000000:Inside Pyramids B2 ^FF0000[MvP]^000000")) {
@@ -673,26 +603,22 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "moc_pryd04",181,11;
 	end;
 case 3:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "moc_pryd06",192,11;
 	end;
 
 }
 
 D_Rachel:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:5 ^FF0000[MvP]^000000")) {
@@ -703,17 +629,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "ra_san05",150,11;
 	end;
 }
 
 D_Scaraba:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -724,17 +648,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "dic_dun02",102,142;
 	end;
 }
 
 D_Sphinx:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:5 ^FF0000[MvP]^000000")) {
@@ -745,17 +667,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "in_sphinx5",100,99;
 	end;
 }
 
 D_Sunken:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -766,11 +686,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "treasure02",102,27;
 	end;
 }
@@ -783,7 +701,7 @@ D_Thana:
 	end;
 
 D_Thor:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:3 ^FF0000[MvP]^000000")) {
@@ -794,17 +712,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "thor_v03",34,272;
 	end;
 }
 
 D_Toy:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("1:2 ^FF0000[MvP]^000000")) {
@@ -815,17 +731,15 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "xmas_dun02",129,133;
 	end;
 }
 
 D_Turtle:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Selecciona piso:";
 	next;
 	switch(select("Turtle Dungeon - Entrance:Turtle Dungeon - LvL 3 ^FF0000[MvP]^000000")) {
@@ -836,11 +750,9 @@ case 1:
 	end;
 
 case 2:
-	mes "[ ^0770E9Warper xRO^000000 ]";
-	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
-	next;
-	if (countitem(512) < 1) goto L_noItems;
-	delitem 512, 1;
+	
+	
+	
 	warp "tur_dun04",100,192;
 	end;
 }
@@ -852,14 +764,14 @@ D_Umbala:
 	end;
 
 L_noItems:
-	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "[ ^0770E9Warper VictoRO^000000 ]";
 	mes "Lo siento, pero no tienes el ticket...";
 	close;		
 
 				case 4:
 					callsub S_CheckVar;
 					setarray .@WFildL$[1],"Amatsu Field","Ayothaya Fields","Brasilis Field","Comodo Fields","Discastes Fields","Einbroch Fields","Geffen Fields","Gonryun Field","Hugel Fields","Lighthalzen Fields","Louyang Field","Lutie Field","Manuk Fields","Mjolnir Fields","Niflheim Fields","Odin Temple","Payon Forests","Prontera Fields","Rachel Fields","Sograt Deserts","Splendide Fields","Umbala Fields","Veins Fields","Yuno Fields";
-					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "[ ^0770E9Warper VictoRO^000000 ]";
 					mes "Elige la field (campo) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto m�s alto sea el nivel, m�s dif�cil ser�. ";
 					set .@Menu$, "";
 					for( set .@i, 1; .@i < getarraysize(.@WFildL$); set .@i, .@i + 1 )
@@ -1089,22 +1001,6 @@ L_noItems:
 					callsub S_CheckVar;
 					callfunc "LastMapSave";
 					end;
-				case 5:
-					warp "xROmarket",100,111;
-					close;
-				case 6:
-					mes "[ ^0770E9Warper xRO^000000 ]";
-					mes "�A qu� zona especial (custom) quieres ir?";
-					switch (select(
-							"- ^FF9900x^000000^0099FFRO^000000 ^0033FFCash Shop^000000",
-							"- ^CC3300Mercado de NPC^000000")){
-						case 1:
-							warp "quiz_02",350,384;
-							close;
-						case 2:
-							warp "ayothaya",151,161;
-							close;
-					}
 	}
 S_CheckVar:
 	cleararray .@WCityN$[0],0,127;
@@ -1129,41 +1025,6 @@ function	script	LastMapSave	{
 	return;
 }
 
-1@dbroom,18,185,3	script	Warper xRO::DBexit	831,{
-	mes "^[ ^0770E9Warper xRO^000000 ]";
-	mes "�Quieres regresar a "+getsavepoint(0)+"?";
-	next;
-	if(select("Si:Mejor No") == 2){
-		close;
-	}
-	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
-	end;
-}
-
-1@dbroom,12,159,3	script	Warp::WarpDB	-1,10,5,{
-OnTouch:
-	getmapxy(.@mapES$, .@1E, .@2E,0);
-	warp .@mapES$,106,98;
-	end;
-}
-
-1@dbroom,20,168,1	script	Se�al::DBSignal	835,{
-	end;
-OnInit:
-	waitingroom "Centro del mapa Por aqui",0;
-	end;
-}
-
--	script	DBStuff	-1,{
-OnPCDieEvent:
-getmapxy(.@mapname$,.@mapx,.@mapy,0);
-if (compare(.@mapname$,"@dbroom"))
-	{
-		sleep2 1000;
-		warp .@mapname$,15,180;
-		end;
-	}
-}
 
 //-------------------------------
 //       Duplicate NPCs
