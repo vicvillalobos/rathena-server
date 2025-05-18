@@ -14,3 +14,23 @@ mydb = mysql.connector.connect(
 
 print(mydb)
 
+# Select the database
+mycursor = mydb.cursor()
+mycursor.execute("USE ragnarok")
+# Select the table
+mycursor.execute("SELECT * FROM item_db2")
+
+# Fetch all rows
+myresult = mycursor.fetchall()
+
+# Print the first 10 rows
+for row in myresult[:10]:
+    print(row)
+    
+# Close the cursor and connection
+mycursor.close()
+mydb.close()
+#
+
+
+
