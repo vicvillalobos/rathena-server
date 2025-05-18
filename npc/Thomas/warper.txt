@@ -1,0 +1,1342 @@
+	//===== eAthena Script =========================================================
+//= Warper Editado Para X-RO
+//===== By: ====================================================================
+//= KoKe
+//===== Current Version: =======================================================
+//= 2.1
+//===== ChangeLog: =============================================================
+//=	1.0	-	10/04/11
+//=	- Agregados cuartos de Dead Branch						
+//=	- Agregado nombre del ultimo mapa en el menu	
+//=	- Agregado un poco mas de robustes al script
+//=	2.0	-	17/01/12
+//=	- Remake completo del npc
+//=		- Agregado configuracion mas compleja pero eficiente para los warp
+//=		- Dead Branch room ahora es un instance ( 3 a�os planeandolo por fin? )
+//=		- Actualizado total del npc
+//=	2.1	-	19/01/12
+//=	- Agregados los fields faltantes
+//=		-	Discastes Fields ( dic_fild )
+//==============================================================================
+//=	Por Hacer
+//	-	Que muestre si esta vivo o muerto Mvps o mini bosses
+//==============================================================================
+
+prontera,160,187,4	script	Warper::Warper	831,{
+Main:
+	if (getbrokenid(1) != 0) {
+		while (getbrokenid(1) != 0){
+			specialeffect2 101;
+			repairall;
+		}
+	}
+	sc_start 32,250000,10;  // Increase Agi
+	sc_start 30,250000,10;  // Blessing
+	percentheal 100,100;
+	set .@DBCost,1000;
+	callsub S_CheckVar;
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "�A d�nde quieres que te lleve?";
+	next;
+	switch (select(
+		"^DF6F00Volver a [^000000 ^0066FF"+warpmapN$+"^000000 ^DF6F00]^000000",
+		"^74B221> Warp a Ciudades^000000",
+		"^B53F05> Warp a Dungeon's^000000",
+		"^696969> Warp a Field's^000000",
+		"^2E64FE> Mercado de Merchants^000000",
+		"^7401DF> Zonas Especiales^000000",
+		"[ ^A10015Dead Branch Room's^000000 ]")){
+				case 1:
+					if (warpmap$ == "") 
+					{ 
+						mes "No has visitado ning�n mapa antes.";
+						close; 
+					}
+					warp ""+warpmap$+"",warpmapx,warpmapy;
+					end;
+				case 2:
+					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "�A qu� ciudad quieres ir?";
+					setarray .@WCityN$[1],"Prontera (Capital de xRO)","Alberta","Aldebaran","Amatsu","Ayothaya","Brasilis","Comodo","Dicastes","Einbech (Mining Village)","Einbroch","Geffen","Gonryun","Hugel","Izlude","Jawaii","Lighthalzen","Louyang","Lutie","Manuk","Midgarts Expedition Camp","Morroc","Moscovia","Nameless Island","Niflheim","Payon","Rachel","Splendide","Thor Camp","Umbala","Veins","Yuno","Dewata","Malagno Island","Bifrost","Discastes";
+					setarray .@WCityM$[1],                     "prontera","alberta","aldebaran","amatsu","ayothaya","brasilis","comodo","dicastes01",                 "einbech","einbroch","geffen","gonryun","hugel","izlude","jawaii","lighthalzen","louyang","xmas","manuk",                "mid_camp","morocc","moscovia",     "nameless_n","niflheim","payon","rachel","splendide","thor_camp","umbala","veins","yuno","dewata",      "malangdo",   "mora","dicastes01";
+					setarray .@WCityX[1],                             155,       49,        140,     224,       208,       192,     189,       197,                        70,        64,     119,      160,     96,     128,     213,          158,      218,    147,    260,                       219,     156,       225,              256,        85,    152,     130,        200,        254,     145,    216,   157,     200,             180,      108,         198;
+					setarray .@WCityY[1],                             183,      246,        117,     299,       199,       217,     149,       196,                        95,       200,      59,      121,    145,     140,     230,           92,      103,    134,    175,                       238,      93,       193,              215,       154,     75,     137,        153,         90,     155,    123,    51,     178,             129,       98,         189;	
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WCityN$); set .@i, .@i + 1 )
+					{
+						set .@Menu$, .@Menu$ + " ^339900" + .@WCityN$[.@i] + "^000000:";
+					}
+					set .@j, select(.@Menu$);
+					set warpmapN$,.@WCityN$[.@j];
+					warp .@WCityM$[.@j],.@WCityX[.@j],.@WCityY[.@j];
+					callsub S_CheckVar;
+					callfunc "LastMapSave";
+					end;
+				case 3:
+				Main_dun:
+					callsub S_CheckVar;				
+					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "					";
+					mes "Elige la dungeon (mazmorra) al que quieres ir.";
+					next;
+					mes "Recuerda: Solo puedes acceder a los primeros pisos, si quieres ir al piso MvP tendras que pagar:";
+					mes "^FF0000>> x1 MvP Warper Ticket ^000000 ";
+					next;
+					menu "Abbey, Cursed Dungeon",D_Abbey,"Abyss Lakes",D_Abyss,"Amatsu Dungeon",D_Amatsu,"Anthell",D_Anthell,"Ayothaya Dungeon",D_Ayothaya,"Beach Dungeon",D_Beach,"Bio Laboratory",D_Bio,"Brasilis Dungeon",D_Brasilis,"Byalan Dungeon",D_Byalan,"Clock Tower",D_Clock,"Coal Mines",D_Coal,"Culverts",D_Culverts,"Dewata Dungeon",D_Dewata,"Einbroch Dungeon",D_Ein,"Endless Tower",D_Endless,"Gefenia",D_Geffenia,"Geffen Dungeon",D_Geffen,"Glast Heim",D_Glast,"Gonryun Dungeon",D_Gonryun,"Hidden Dungeon",D_Hidden,"Ice Cave",D_Ice,"Juperos Dungeon",D_Juperos,"Kiel Dungeon",D_Kiel,"Lighthalzen Dungeon",D_Light,"Louyang Dungeon",D_Louyang,"Malangdo Dungeon",D_Malangdo,"Magma Dungeon",D_Magma,"Moscovia Dungeon",D_Moscovia,"Nidhoggur's Dungeon",D_Nyd1,"Nidhoggur's Nest",D_Nyd2,"Orc Dungeon",D_Orc,"Payon Dungeon",D_Payon,"Pyramids",D_Pyramids,"Rachel Sanctuary",D_Rachel,"Scaraba Hole Dungeon",D_Scaraba,"Sphinx",D_Sphinx,"Sunken Ship",D_Sunken,"Thanatos Tower",D_Thana,"Thor Volcano",D_Thor,"Toy Factory",D_Toy,"Turtle Dungeon",D_Turtle,"Umbala Dungeon",D_Umbala;
+
+D_Abbey:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "abbey01",51,14;
+	callfunc "LastMapSave";
+	set warpmapN$, "Abbey 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "abbey02",150,11;
+	end;
+case 3:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "abbey03",120,10;
+	end;
+
+}
+
+D_Abyss:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "abyss_01",263,273;
+	callfunc "LastMapSave";
+	set warpmapN$, "Abyss 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "abyss_03",116,28;
+	end;
+}
+
+D_Amatsu:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "ama_dun01",228,11;
+	callfunc "LastMapSave";
+	set warpmapN$, "Amatsu Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ama_dun03",120,14;
+	end;
+}
+
+D_Anthell:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "anthell01",35,262;
+	callfunc "LastMapSave";
+	set warpmapN$, "Anthell 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "anthell02",168,170;
+	end;
+}
+
+D_Ayothaya:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "ayo_dun01",275,19;
+	callfunc "LastMapSave";
+	set warpmapN$, "Ayothaya Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ayo_dun02",24,26;
+	end;
+}
+
+D_Beach:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1 ^FF0000[MvP]^000000:2")) {
+case 1:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "beach_dun01",266,67;
+	end;
+
+case 2:
+	warp "beach_dun02",255,244;
+	callfunc "LastMapSave";
+	set warpmapN$, "Beach Dungeon, North";
+	end;
+}
+
+D_Bio:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "lhz_dun01",150,288;
+	callfunc "LastMapSave";
+	set warpmapN$, "Bio Laboratory 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "lhz_dun02",150,18;
+	end;
+case 3:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "lhz_dun03",140,134;
+	end;
+
+}
+
+D_Brasilis:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "bra_dun01",87,47;
+	callfunc "LastMapSave";
+	set warpmapN$, "Brasilis Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ayo_dun02",262,262;
+	end;
+}
+
+D_Byalan:
+	warp "iz_dun01",168,168;
+	callfunc "LastMapSave";
+	set warpmapN$, "Byalan Dungeon 1";
+	end;
+
+
+D_Clock:
+	warp "c_tower01",199,159;
+	callfunc "LastMapSave";
+	set warpmapN$, "Clock Tower 1";
+	end;
+
+D_Coal:
+	warp "mjo_dun01",52,17;
+	callfunc "LastMapSave";
+	set warpmapN$, "Coal Mine 1";
+	end;
+
+
+D_Culverts:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:4 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "prt_sewb01",131,247;
+	callfunc "LastMapSave";
+	set warpmapN$, "Culverts 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "prt_sewb04",100,92;
+	end;
+}
+
+D_Dewata:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1 ^FF0000[MvP]^000000:2")) {
+case 1:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "dew_dun01",176,86;
+	end;
+
+case 2:
+	warp "dew_dun02",298,29;
+	callfunc "LastMapSave";
+	set warpmapN$, "Dewata Dungeon 2";
+	end;
+}
+
+D_Ein:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "ein_dun01",22,14;
+	callfunc "LastMapSave";
+	set warpmapN$, "Einbroch Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ein_dun02",287,287;
+	end;
+}
+
+D_Endless:
+	warp "e_tower",72,115;
+	callfunc "LastMapSave";
+	set warpmapN$, "Endless Tower 1";
+	end;
+
+D_Geffenia:
+	warp "gefenia",40,103;
+	callfunc "LastMapSave";
+	set warpmapN$, "Geffenia 1";
+	end;
+
+D_Geffen:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1 ^FF0000[MvP]^000000:2:3 ^FF0000[MvP]^000000")) {
+case 1:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "gef_dun01",104,99;
+	end;
+
+
+case 2:
+	warp "gef_dun02",115,236;
+	callfunc "LastMapSave";
+	set warpmapN$, "Geffen Dungeon 2";
+	end;
+case 3:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "gef_dun03",106,132;
+	end;
+
+
+}
+
+D_Glast:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("Glast Heim - Entrance:Glast Heim - Churchyard ^FF0000[MvP]^000000")) {
+case 1:
+	warp "glast_01",370,304;
+	callfunc "LastMapSave";
+	set warpmapN$, "Glast Heim - Entrance";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "gl_chyard",147,18;
+	end;
+}
+D_Gonryun:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "gon_dun01",153,53;
+	callfunc "LastMapSave";
+	set warpmapN$, "Gonryun Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "gon_dun03",68,16;
+	end;
+}
+
+D_Hidden:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "prt_maze01",176,7;
+	callfunc "LastMapSave";
+	set warpmapN$, "Hidden Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "prt_maze03",23,8;
+	end;
+}
+
+D_Ice:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "ice_dun01",157,14;
+	callfunc "LastMapSave";
+	set warpmapN$, "Ice Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ice_dun03",149,22;
+	end;
+}
+
+D_Juperos:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "juperos_01",157,14;
+	callfunc "LastMapSave";
+	set warpmapN$, "Juperos Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "juperos_03",149,22;
+	callfunc "LastMapSave";
+	end;
+}
+
+D_Kiel:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "kh_dun01",26,220;
+	callfunc "LastMapSave";
+	set warpmapN$, "Kiel Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "kh_dun02",40,199;
+	end;
+}
+
+D_Light:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "lhz_dun01",150,288;
+	callfunc "LastMapSave";
+	set warpmapN$, "Lighthalzen Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "lhz_dun02",150,18;
+	end;
+case 3:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "lhz_dun03",140,134;
+	end;
+
+}
+
+D_Louyang:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "lou_dun01",215,195;
+	callfunc "LastMapSave";
+	set warpmapN$, "Louyang Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "lou_dun03",165,41;
+	end;
+}
+
+D_Malangdo:
+	warp "mal_dun01",33,230;
+	callfunc "LastMapSave";
+	set warpmapN$, "Malangdo Dungeon 1";
+	end;
+
+D_Magma:
+	warp "mag_dun01",126,68;
+	callfunc "LastMapSave";
+	set warpmapN$, "Magma Dungeon 1";
+	end;
+
+D_Moscovia:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "mosk_dun01",204,51;
+	callfunc "LastMapSave";
+	set warpmapN$, "Moscovia Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "mosk_dun03",31,135;
+	end;
+}
+
+D_Nyd1:
+	warp "nyd_dun01",61,221;
+	callfunc "LastMapSave";
+	set warpmapN$, "Nidhoggur's Dungeon";
+	end;
+
+D_Nyd2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "1@nyd",32,45;
+	callfunc "LastMapSave";
+	set warpmapN$, "Nidhoggur's Nest 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "2@nyd",200,9;
+	end;
+}
+
+D_Orc:
+	warp "orcsdun01",32,170;
+	callfunc "LastMapSave";
+	set warpmapN$, "Orc Dungeon 1";
+	end;
+
+D_Payon:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:5 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "pay_dun00",21,182;
+	callfunc "LastMapSave";
+	set warpmapN$, "Payon Dungeon 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "pay_dun04",195,200;
+	end;
+}
+
+D_Pyramids:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("Inside Pyramids F1:Inside Pyramids F4 ^FF0000[MvP]^000000:Inside Pyramids B2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "moc_pryd01",192,9;
+	callfunc "LastMapSave";
+	set warpmapN$, "Pyramids 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "moc_pryd04",181,11;
+	end;
+case 3:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "moc_pryd06",192,11;
+	end;
+
+}
+
+D_Rachel:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:5 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "ra_san01",139,18;
+	callfunc "LastMapSave";
+	set warpmapN$, "Rachel Sanctuary 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "ra_san05",150,11;
+	end;
+}
+
+D_Scaraba:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "dic_dun01",33,212;
+	callfunc "LastMapSave";
+	set warpmapN$, "Scaraba Hole 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "dic_dun02",102,142;
+	end;
+}
+
+D_Sphinx:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:5 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "in_sphinx1",288,9;
+	callfunc "LastMapSave";
+	set warpmapN$, "Sphinx 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "in_sphinx5",100,99;
+	end;
+}
+
+D_Sunken:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "treasure01",69,24;
+	callfunc "LastMapSave";
+	set warpmapN$, "Sunken Ship 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "treasure02",102,27;
+	end;
+}
+
+
+D_Thana:
+	warp "tha_t01",150,39;
+	callfunc "LastMapSave";
+	set warpmapN$, "Thanatos Tower 1";
+	end;
+
+D_Thor:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "thor_v01",21,228;
+	callfunc "LastMapSave";
+	set warpmapN$, "Thor Volcano 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "thor_v03",34,272;
+	end;
+}
+
+D_Toy:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("1:2 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "xmas_dun01",205,15;
+	callfunc "LastMapSave";
+	set warpmapN$, "Toy Factory 1";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "xmas_dun02",129,133;
+	end;
+}
+
+D_Turtle:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Selecciona piso:";
+	next;
+	switch(select("Turtle Dungeon - Entrance:Turtle Dungeon - LvL 3 ^FF0000[MvP]^000000")) {
+case 1:
+	warp "tur_dun01",154,49;
+	callfunc "LastMapSave";
+	set warpmapN$, "Turtle Dungeon - Entrance";
+	end;
+
+case 2:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Bien, pero primero verificaremos si tienes ^FF0000x1 MvP Warper Ticket^000000  ";
+	next;
+	if (countitem(512) < 1) goto L_noItems;
+	delitem 512, 1;
+	warp "tur_dun04",100,192;
+	end;
+}
+
+D_Umbala:
+	warp "um_dun01",42,31;
+	callfunc "LastMapSave";
+	set warpmapN$, "Umbala Dungeon";
+	end;
+
+L_noItems:
+	mes "[ ^0770E9Warper xRO^000000 ]";
+	mes "Lo siento, pero no tienes el ticket...";
+	close;		
+
+				case 4:
+					callsub S_CheckVar;
+					setarray .@WFildL$[1],"Amatsu Field","Ayothaya Fields","Brasilis Field","Comodo Fields","Discastes Fields","Einbroch Fields","Geffen Fields","Gonryun Field","Hugel Fields","Lighthalzen Fields","Louyang Field","Lutie Field","Manuk Fields","Mjolnir Fields","Niflheim Fields","Odin Temple","Payon Forests","Prontera Fields","Rachel Fields","Sograt Deserts","Splendide Fields","Umbala Fields","Veins Fields","Yuno Fields";
+					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "Elige la field (campo) y el nivel al que quieres ir. ^D50101Recuerda:^000000 Cuanto m�s alto sea el nivel, m�s dif�cil ser�. ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WFildL$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^FF3300" + .@WFildL$[.@i] + "^000000:";
+					set .@j, select(.@Menu$);
+					if( .@j == 1)
+					{
+						set warpmapN$,.@WFildL$[1]; 
+						warp "ama_fild01",190,197;
+						callfunc "LastMapSave";
+						end;	
+					}
+					if( .@j == 2)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Ayothaya Field 1","Ayothaya Field 2";
+						setarray .@WFieldD$[1],                "",                "";
+						setarray .@WFieldX[1],                173,               212;
+						setarray .@WFieldY[1],                134,               150;
+						set .@WFieldM$,"ayo_fild";
+					}
+					if( .@j == 3)
+					{
+						set warpmapN$,.@WFildL$[3]; 
+						warp "bra_fild01",74,32;
+						callfunc "LastMapSave";
+						end; 	
+					}
+					if( .@j == 4)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],   "Comodo Field 1","Comodo Field 2","Comodo Field 3","Comodo Field 4",            "Comodo Field 5",        "Comodo Field 6",       "Comodo Field 7",               "Comodo Field 8",                "Comodo Field 9";
+						setarray .@WFieldD$[1],"Papuchicha Forest",  "Kokomo Beach",  "Zenhai Marsh",  "Kokomo Beach","Border of Papuchica Forest","Fortress Saint Darmain","Beacon Island, Pharos","Fortress Saint Darmain (East)","Fortress Saint Darmain (South)";
+						setarray .@WFieldX[1],                 180,             231,             191,             228,                         224,                     190,                    234,                            194,                             172;
+						setarray .@WFieldY[1],                 178,             160,             172,             194,                         203,                     223,                    137,                            175,                             172;
+					    set .@WFieldM$,"cmd_fild";
+					}
+					if( .@j == 5)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Discastes Field 1","Discastes Field 2";
+						setarray .@WFieldD$[1],                 "",                 "";
+						setarray .@WFieldX[1],                 150,                 71;
+						setarray .@WFieldY[1],                 278,                369;
+						set .@WFieldM$,"dic_fild";
+					}
+					if( .@j == 6)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Einbroch Field 1","Einbroch Field 2","Einbroch Field 3","Einbroch Field 4","Einbroch Field 5","Einbroch Field 6","Einbroch Field 7","Einbroch Field 8","Einbroch Field 9","Einbroch Field 10";
+						setarray .@WFieldD$[1],                "",                "",                "",                "",                "",                "",                "",                "",                "",                 "";
+						setarray .@WFieldX[1],                142,               182,               187,               185,               216,               195,               272,               173,               207,                196;
+						setarray .@WFieldY[1],                225,               141,               228,               173,               173,               148,               220,               214,               174,                200;
+						set .@WFieldM$,"ein_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					}
+					if( .@j == 7)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Geffen Field 0","Geffen Field 1","Geffen Field 2","Geffen Field 3","Geffen Field 4","Geffen Field 5","Geffen Field 6","Geffen Field 7","Geffen Field 8","Geffen Field 9","Geffen Field 10","Geffen Field 11","Geffen Field 12","Geffen Field 13", "Geffen Field 14";
+						setarray .@WFieldD$[1],              "",              "",              "",              "",              "",              "",              "",              "",              "",              "",               "",               "",   "Kordt Forest",      "Britoniah","West Orc Village";
+						setarray .@WFieldX[1],               46,             213,             195,             257,             188,             166,             248,             195,             186,             221,              178,              136,              240,              235,               211;
+						setarray .@WFieldY[1],              199,             204,             212,             192,             171,             263,             158,             191,             183,             117,              218,              318,              181,              235,               185;
+						set .@WFieldM$,"gef_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 8)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WDunN$[7]; 
+						warp "gon_fild01",220,227;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 9)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Hugel Field 1","Hugel Field 2","Hugel Field 3","Hugel Field 4",  "Hugel Field 5","Hugel Field 6","Hugel Field 7";
+						setarray .@WFieldD$[1],             "",             "",             "",             "","The Abyss Lakes",             "",             "";
+						setarray .@WFieldX[1],             268,            222,            232,            252,              196,            216,            227;
+						setarray .@WFieldY[1],             101,            193,            185,            189,              106,            220,            197;
+						set .@WFieldM$,"hu_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 10)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Lighthalzen Field 1", "Lighthalzen Field 2", "Lighthalzen Field 3";
+						setarray .@WFieldD$[1],                   "","Grim Reaper's Valley",                    "";
+						setarray .@WFieldX[1],                   240,                   185,                   240;
+						setarray .@WFieldY[1],                   179,                   235,                   226;
+						set .@WFieldM$,"lhz_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 11)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WFildL$[10]; 
+						warp "lou_fild01",229,187;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 12)
+					{
+						callsub S_CheckVar;
+						set warpmapN$,.@WFildL$[11]; 
+						warp "xmas_fild01",115,145;
+						callfunc "LastMapSave";
+						end;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+					}
+					if( .@j == 13)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Manuk Field 1","Manuk Field 2","Manuk Field 3";
+						setarray .@WFieldD$[1],             "",             "",             "";
+						setarray .@WFieldX[1],              35,             35,             84;
+						setarray .@WFieldY[1],             236,            262,            365;
+						set .@WFieldM$,"man_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 14)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Mjolnir Field 1","Mjolnir Field 2","Mjolnir Field 3","Mjolnir Field 4","Mjolnir Field 5","Mjolnir Field 6","Mjolnir Field 7","Mjolnir Field 8","Mjolnir Field 9","Mjolnir Field 10","Mjolnir Field 11","Mjolnir Field 12";
+						setarray .@WFieldD$[1],               "",               "",               "",               "",               "",               "",               "",               "",               "",                "",                "",                "";
+						setarray .@WFieldX[1],               204,              175,              208,              179,              181,              195,              235,              188,              205,               245,               180,               196;
+						setarray .@WFieldY[1],               120,              193,              213,              180,              240,              270,              202,              215,              144,               223,               206,               208;
+						set .@WFieldM$,"mjolnir_";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 15)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],   "Niflheim Field 1","Niflheim Field 2";
+						setarray .@WFieldD$[1],"Skellington Village", "Valley of Gyoll";
+						setarray .@WFieldX[1],                   215,               167;
+						setarray .@WFieldY[1],                   229,               234;
+						set .@WFieldM$,"nif_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 16)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Odin Temple 1","Odin Temple 2","Odin Temple 3";
+						setarray .@WFieldD$[1],             "",             "",             "";
+						setarray .@WFieldX[1],             298,            227,            265;
+						setarray .@WFieldY[1],             165,            149,            280;
+						set .@WFieldM$,"odin_tem";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 17)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Payon Forest 1","Payon Forest 2","Payon Forest 3","Payon Forest 4","Payon Forest 5","Payon Forest 6","Payon Forest 7","Payon Forest 8","Payon Forest 9","Payon Forest 10","Payon Forest 11";
+						setarray .@WFieldD$[1],              "",              "",              "",              "",              "",              "",              "",              "",              "",               "",               "";
+						setarray .@WFieldX[1],              158,             151,             205,             186,             134,             193,             200,             137,             201,              160,              194;
+						setarray .@WFieldY[1],              206,             219,             148,             247,             204,             235,             177,             189,             224,              205,              150;
+						set .@WFieldM$,"pay_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 18)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Prontera Field 0","Prontera Field 1","Prontera Field 2","Prontera Field 3","Prontera Field 4","Prontera Field 5","Prontera Field 6","Prontera Field 7","Prontera Field 8","Prontera Field 9","Prontera Field 10","Prontera Field 11";
+						setarray .@WFieldD$[1],                "",                "",                "",                "",                "",                "",                "",                "",                "",                "",                 "",                 "";
+						setarray .@WFieldX[1],                184,               190,               240,               190,               307,               239,               185,               193,               187,               210,                195,                198;
+						setarray .@WFieldY[1],                235,               206,               206,               143,               252,               213,               188,               194,               218,               183,                149,                164;
+						set .@WFieldM$,"prt_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 19)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],    "Rachel Field 1","Rachel Field 2","Rachel Field 3",    "Rachel Field 4",    "Rachel Field 5","Rachel Field 6","Rachel Field 7","Rachel Field 8",    "Rachel Field 9","Rachel Field 10","Rachel Field 11","Rachel Field 12","Rachel Field 13";
+						setarray .@WFieldD$[1],"Audumra Grass Land",      "Oz Gorge",     "Ida Plane","Audumra Grass Land","Audumra Grass Land",    "Fortu Luna",      "Oz Gorge",     "Ida Plane","Audumra Grass Land",       "Oz Gorge",      "Ida Plane",      "Ida Plane", "Beach of Tears";
+						setarray .@WFieldX[1],                  192,             235,             202,                 202,                 225,             202,             263,             217,                  87,              277,              221,              175,              174;
+						setarray .@WFieldY[1],                  162,             166,             206,                 208,                 202,             214,             196,             201,                 121,              181,              185,              200,              197;
+						set .@WFieldM$,"ra_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 20)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Sograt Desert 1","Sograt Desert 2","Sograt Desert 3","Sograt Desert 4","Sograt Desert 5","Sograt Desert 6","Sograt Desert 7","Sograt Desert 8","Sograt Desert 9","Sograt Desert 10","Sograt Desert 11","Sograt Desert 12","Sograt Desert 13","Sograt Desert 14","Sograt Desert 15","Sograt Desert 16","Sograt Desert 17","Sograt Desert 18","Sograt Desert 19",                            "Sograt Desert 20", "Sograt Desert 21", "Sograt Desert 22";
+						setarray .@WFieldD$[1],               "",               "",               "",               "",               "",               "",               "",               "",               "",                "",                "",                "",                "",                "",                "",                "",                "",                "",                "","Continental Guard Quarantine","Dimensional Gorge","Dimensional Gorge";
+						setarray .@WFieldX[1],               219,              177,              194,              184,              203,              213,              224,              229,              195,               209,               198,               156,               185,               209,               223,               206,               208,               209,                85,                                            44,                 46,                 38;
+						setarray .@WFieldY[1],               205,              206,              182,              217,              213,              208,              170,              177,              198,               168,               216,               187,               263,               219,               188,               228,               238,               223,                97,                                           179,                192,                196;
+						set .@WFieldM$,"moc_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 21)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Splendide Field 1","Splendide Field 2","Splendide Field 3";
+						setarray .@WFieldD$[1],                 "",                 "",                 "";
+						setarray .@WFieldX[1],                 289,                 12,                306;
+						setarray .@WFieldY[1],                  32,                241,                375;
+						set .@WFieldM$,"spl_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 22)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Umbala Field 1","Umbala Field 2","Umbala Field 3","Umbala Field 4";
+						setarray .@WFieldD$[1], "Luluka Forest", "Hoomga Forest",  "Kalala Swamp", "Hoomga Jungle";
+						setarray .@WFieldX[1],              217,             223,             237,             202;
+						setarray .@WFieldY[1],              206,             221,             215,             197;
+						set .@WFieldM$,"um_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 23)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Veins Field 1","Veins Field 2","Veins Field 3","Veins Field 4","Veins Field 5","Veins Field 6","Veins Field 7";
+						setarray .@WFieldD$[1],             "",             "",             "",             "",             "",             "",             "";
+						setarray .@WFieldX[1],             186,            196,            222,             51,            202,            150,            149;
+						setarray .@WFieldY[1],             175,            370,             45,            250,            324,            223,            307;
+						set .@WFieldM$,"ve_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					if( .@j == 24)
+					{
+						callsub S_CheckVar;
+						setarray .@WFieldN$[1],"Yuno Field 1",       "Yuno Field 2",  "Yuno Field 3",  "Yuno Field 4",  "Yuno Field 5",  "Yuno Field 6",                  "Yuno Field 7",       "Yuno Field 8",           "Yuno Field 9","Yuno Field 10","Yuno Field 11",    "Yuno Field 12";
+						setarray .@WFieldD$[1],"Border Posts","Kiel Hyre's Cottage","El Mes Plateau","El Mes Plateau","El Mes Plateau","El Mes Plateau","El Mes Gorge (Valley of Abyss)","Kiel Hyre's Academy","Schwarzwald Guards Camp",             "",             "","Border Checkpoint";
+						setarray .@WFieldX[1],            189,                  192,             221,             226,             223,             187,                             231,                  196,                      183,            200,            195,                210;
+						setarray .@WFieldY[1],            224,                  207,             157,             199,             177,             232,                             174,                  203,                      214,            124,            226,                304;
+						set .@WFieldM$,"yuno_fild";                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+					}
+					mes "          ";
+					set .@Menu$, "";
+					for( set .@i, 1; .@i < getarraysize(.@WFieldN$); set .@i, .@i + 1 )
+						set .@Menu$, .@Menu$ + " ^FF3300" + .@WFieldN$[.@i] + "^000000 " + .@WFieldD$[.@i] + " :";
+					set .@j, select(.@Menu$);
+					if ( .@WFieldM$ == "gef_fild" || .@WFieldM$ == "prt_fild" )
+					{ 
+						if( .@j == 1){set .WNm$,"00";} else if( .@j == 2){set .WNm$,"01";} else if( .@j == 3){set .WNm$,"02";} else if( .@j == 4){set .WNm$,"03";} else if( .@j == 5){set .WNm$,"04";} else if( .@j == 6){set .WNm$,"05";} else if( .@j == 7){set .WNm$,"06";} else if( .@j == 8){set .WNm$,"07";} else if( .@j == 9){set .WNm$,"08";} else if( .@j == 10){set .WNm$,"09";} else if( .@j == 11){set .WNm$,"10";} else if( .@j == 12){set .WNm$,"11";} else if( .@j == 13){set .WNm$,"12";} else if( .@j == 14){set .WNm$,"13";} else if( .@j == 15){set .WNm$,"14";}
+					} else if( .@j == 1){set .WNm$,"01";} else if( .@j == 2){set .WNm$,"02";} else if( .@j == 3){set .WNm$,"03";} else if( .@j == 4){set .WNm$,"04";} else if( .@j == 5){set .WNm$,"05";} else if( .@j == 6){set .WNm$,"06";} else if( .@j == 7){set .WNm$,"07";} else if( .@j == 8){set .WNm$,"08";} else if( .@j == 9){set .WNm$,"09";} else if( .@j == 10){set .WNm$,"10";} else if( .@j == 11){set .WNm$,"11";} else if( .@j == 12){set .WNm$,"12";} else if( .@j == 13){set .WNm$,"13";} else if( .@j == 14){set .WNm$,"14";} else if( .@j == 15){set .WNm$,"15";} else if( .@j == 16){set .WNm$,"16";} else if( .@j == 17){set .WNm$,"17";} else if( .@j == 18){set .WNm$,"18";} else if( .@j == 19){set .WNm$,"19";} else if( .@j == 20){set .WNm$,"20";} else if( .@j == 21){set .WNm$,"21";} else if( .@j == 22){set .WNm$,"22";}
+					
+					set warpmapN$,.@WFieldN$[.@j];
+					warp .@WFieldM$+.WNm$,.@WFieldX[.@j],.@WFieldY[.@j];
+					callsub S_CheckVar;
+					callfunc "LastMapSave";
+					end;
+				case 5:
+					warp "xROmarket",100,111;
+					close;
+				case 6:
+					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "�A qu� zona especial (custom) quieres ir?";
+					switch (select(
+							"- ^FF9900x^000000^0099FFRO^000000 ^0033FFCash Shop^000000",
+							"- ^CC3300Mercado de NPC^000000")){
+						case 1:
+							warp "quiz_02",350,384;
+							close;
+						case 2:
+							warp "ayothaya",151,161;
+							close;
+					}
+				case 7:
+				DeadBranchStuff:
+					set .@DBuser1,getmapusers("pvp_n_1-1");
+					set .@DBmob1,getmapmobs("pvp_n_1-1");
+					mes "[ ^0770E9Warper xRO^000000 ]";
+					mes "Bienvenido a nuestras salas de Dead/Bloody Branch. En nuestras salas podr�s usar las branchs libremente.";
+					next;
+					switch (select(
+						"^A70000Cuarto p�blico^000000 ^5FAE06[^000000 "+.@DBuser1+"^000000 ^5FAE06] [^000000^FF4500 "+ getmapmobs("guild_vs5") +" ^5FAE06]^000000",
+						"^708090Registrar^000000 o ^A70000Entrar^000000 al Bloody Branch Room.",
+						"Regresar.")){
+							case 1:
+								mes "[ ^0770E9Warper xRO^000000 ]";
+								mes "Si entras al cuarto p�blico no nos hacemos cargo si alg�n usuario te roba el mob (monstruo).";
+								close2;
+								warp "pvp_n_1-1",0,0;
+								end;
+							case 2:
+								set .@ins_mas,getpartyleader(getcharid(1),2);
+								set .@md_name$,"Dead Branch Room";
+								if (has_instance("1@dbroom") == "") 
+								{
+									if (getcharid(0) == .@ins_mas )
+									{
+										mes "[ ^0770E9Warper xRO^000000 ]";
+										mes "Reservar una sala privada te costar� ^ff0000" + .@DBCost + " Cash Points^000000.";
+										next;
+										if (#CASHPOINTS < .@DBCost)
+										{
+											mes "[ ^0770E9Warper xRO^000000 ]";
+											mes "Lo siento pero no tienes el Cash necesario para rentar el cuarto.";
+											next;
+											goto DeadBranchStuff;
+											close;
+										}
+										mes "[ ^0770E9Warper xRO^000000 ]";
+										mes "El tiempo de renta son ^FF33003 Horas^000000 y los personajes NO podr�n estar fuera de ella m�s de ^FF330015 minutos^000000, de lo contrario la sala se cerrar� y tendr�n que registrar una nueva.";
+										next;
+										mes "[ ^0770E9Warper xRO^000000 ]";
+										mes "^A70000Importante:^000000 Para que tus compa�eros puedan entrar a tu sala tienen que estar en tu party. Por favor, no elimines tu party o la sala quedar� desactivada.";
+										next;
+										mes "[ ^0770E9Warper xRO^000000 ]";
+										mes "�Quieres activar una sala Bloody Branch Room?";
+										switch(select("^AE0606Activar ^000000"+.@md_name$ + ":Quiz�s en otra ocasi�n.")) 
+										{
+											case 1: 
+												set .@instance, instance_create(.@md_name$,getcharid(1));
+												if( .@instance < 0 )
+												{
+													mes "�Fallo en la creaci�n de la sala!";
+													close;
+												}
+												if( instance_attachmap("1@dbroom", .@instance) == "" )
+												{
+													instance_destroy(.@instance);
+													mes "�Fallo en colocar el mapa!";
+													close;
+												}
+												instance_attach(.@instance);
+												instance_set_timeout(10800,900,.@instance);
+												instance_init(.@instance);
+												set #CASHPOINTS,#CASHPOINTS - .@DBCost;
+												mes "^AE0606Listo, ya tienes tu sala Bloody Branch Room.^000000";
+												next;
+												mes "[ ^0770E9Warper xRO^000000 ]";
+												mes "Para ingresar en la sala Bloody Branch Room vuelve a hablar conmigo y te llevar�.";
+												mes "Gracias por usar nuestro sistema Bloody Branch Room y disfruta de tu estancia en xRO.";
+												next;
+												goto DeadBranchStuff;
+												close;
+											case 2:
+												goto Main;
+												end;
+										}
+									} else {
+										mes "[ ^0770E9Warper xRO^000000 ]";
+										mes "^AE0606Lo siento pero s�lo el lider de la party puede reservar la Bloody Branch Room.^000000";
+										next;
+										goto Main;
+										close;
+									}
+								}
+								warp "1@dbroom",106,96;
+								end;
+							case 3:
+								next;
+								goto Main;
+					}
+	}
+S_CheckVar:
+	cleararray .@WCityN$[0],0,127;
+	cleararray .@WCityM$[0],0,127;
+	cleararray .@WCityX[0],0,127;
+	cleararray .@WCityY[0],0,127;
+	cleararray .@WFieldN$[0],0,127;
+	cleararray .@WFieldM$[0],0,127;
+	cleararray .@WFieldX[0],0,127;
+	cleararray .@WFieldY[0],0,127;
+	cleararray .@WDunN$[1],0,127;
+	cleararray .@WDunX[0],0,127;
+	cleararray .@WDunY[0],0,127;
+	cleararray .@WDunMVP$[0],0,127;
+	set .@WDunM$,""; 
+	set .@WDunN$,"";
+	return;
+}
+
+function	script	LastMapSave	{
+	getmapxy(warpmap$,warpmapx,warpmapy,0,strcharinfo(0));
+	return;
+}
+
+1@dbroom,18,185,3	script	Warper xRO::DBexit	831,{
+	mes "^[ ^0770E9Warper xRO^000000 ]";
+	mes "�Quieres regresar a "+getsavepoint(0)+"?";
+	next;
+	if(select("Si:Mejor No") == 2){
+		close;
+	}
+	warp getsavepoint(0),getsavepoint(1),getsavepoint(2);
+	end;
+}
+
+1@dbroom,12,159,3	script	Warp::WarpDB	-1,10,5,{
+OnTouch:
+	getmapxy(.@mapES$, .@1E, .@2E,0);
+	warp .@mapES$,106,98;
+	end;
+}
+
+1@dbroom,20,168,1	script	Se�al::DBSignal	835,{
+	end;
+OnInit:
+	waitingroom "Centro del mapa Por aqui",0;
+	end;
+}
+
+-	script	DBStuff	-1,{
+OnPCDieEvent:
+getmapxy(.@mapname$,.@mapx,.@mapy,0);
+if (compare(.@mapname$,"@dbroom"))
+	{
+		sleep2 1000;
+		warp .@mapname$,15,180;
+		end;
+	}
+}
+
+//-------------------------------
+//       Duplicate NPCs
+//-------------------------------
+rachel,105,134,6	duplicate(Warper)	Warp NPC#2-2	831
+alberta,120,60,4	duplicate(Warper)	Warp NPC#3-1	831
+aldebaran,145,119,4	duplicate(Warper)	Warp NPC#4-1	831
+amatsu,225,234,4	duplicate(Warper)	Warp NPC#5-1	831
+ayothaya,202,193,6	duplicate(Warper)	Warp NPC#6-1	831
+comodo,193,152,4	duplicate(Warper)	Warp NPC#7-1	831
+einbech,142,246,4	duplicate(Warper)	Warp NPC#8-1	831
+einbroch,69,202,4	duplicate(Warper)	Warp NPC#9-1	831
+hugel,91,145,6	duplicate(Warper)	Warp NPC#10-1	831
+geffen,115,67,6	duplicate(Warper)	Warp NPC#12-1	831
+izlude,132,142,4	duplicate(Warper)	Warp NPC#13-1	831
+xmas,151,135,4	duplicate(Warper)	Warp NPC#14-1	831
+morocc,162,94,4	duplicate(Warper)	Warp NPC#15-1	831
+payon,182,110,4	duplicate(Warper)	Warp NPC#16-1	831
+yuno,158,199,4	duplicate(Warper)	Warp NPC#17-1	831
+moc_fild04,207,331,4	duplicate(Warper)	Warp NPC#18-1	831
+izlu2dun,104,82,4	duplicate(Warper)	Warp NPC#19-1	831
+mjolnir_02,85,363,4	duplicate(Warper)	Warp NPC#20-1	831
+prt_fild05,273,215,4	duplicate(Warper)	Warp NPC#21-1	831
+glast_01,370,308,4	duplicate(Warper)	Warp NPC#22-1	831
+yuno_fild03,37,135,4	duplicate(Warper)	Warp NPC#23-1	831
+gef_fild10,71,339,4	duplicate(Warper)	Warp NPC#24-1	831
+pay_arche,39,135,4	duplicate(Warper)	Warp NPC#25-1	831
+moc_ruins,64,166,4	duplicate(Warper)	Warp NPC#26-1	831
+moc_fild19,106,97,4	duplicate(Warper)	Warp NPC#27-1	831
+alb2trea,73,101,4	duplicate(Warper)	Warp NPC#28-1	831
+tur_dun01,148,239,4	duplicate(Warper)	Warp NPC#29-1	831
+gonryun,156,122,6	duplicate(Warper)	Warp NPC#30-1	831
+louyang,216,109,4	duplicate(Warper)	Warp NPC#31-1	831
+umbala,141,165,6	duplicate(Warper)	Warp NPC#32-1	831
+brasilis,201,222,4	duplicate(Warper)	Warp NPC#33-1	831
+manuk,269,199,4	duplicate(Warper)	Warp NPC#34-1	831
+splendide,206,151,4	duplicate(Warper)	Warp NPC#35-1	831
+mid_camp,223,237,4	duplicate(Warper)	Warp NPC#36-1	831
+moscovia,229,192,4	duplicate(Warper)	Warp NPC#37-1	831
+dicastes01,195,197,6	duplicate(Warper)	Warp NPC#38-1	831
+poring_w02,114,92,6	duplicate(Warper)	Warp NPC#39-1	831
+new_1-1,47,114,6	duplicate(Warper)	Warp NPC#40-1	831
+lighthalzen,165,97,4	duplicate(Warper)	Warp NPC#41-1	831
+dewata,201,183,4	duplicate(Warper)	Warp NPC#42-1	831
+gr_1,47,62,6	duplicate(Warper)	Warp NPC#43-1	831
+gr_2,47,62,6	duplicate(Warper)	Warp NPC#44-1	831
+gr_3,47,62,6	duplicate(Warper)	Warp NPC#45-1	831
+gr_4,47,62,6	duplicate(Warper)	Warp NPC#46-1	831
+gr_5,47,62,6	duplicate(Warper)	Warp NPC#47-1	831
+gr_6,47,62,6	duplicate(Warper)	Warp NPC#48-1	831
+gr_7,47,62,6	duplicate(Warper)	Warp NPC#49-1	831
+gr_8,47,62,6	duplicate(Warper)	Warp NPC#50-1	831
+gr_9,47,62,6	duplicate(Warper)	Warp NPC#51-1	831
+gr_10,47,62,6	duplicate(Warper)	Warp NPC#52-1	831
+gr_11,47,62,6	duplicate(Warper)	Warp NPC#53-1	831
+gr_12,47,62,6	duplicate(Warper)	Warp NPC#54-1	831
+gr_13,47,62,6	duplicate(Warper)	Warp NPC#55-1	831
+gr_14,47,62,6	duplicate(Warper)	Warp NPC#56-1	831
+gr_15,47,62,6	duplicate(Warper)	Warp NPC#57-1	831
+Hyrule,136,189,3	duplicate(Warper)	Warp NPC#58-1	831
+gr_16,47,62,6	duplicate(Warper)	Warp NPC#59-1	831
+gr_17,47,62,6	duplicate(Warper)	Warp NPC#60-1	831
+gr_18,47,62,6	duplicate(Warper)	Warp NPC#61-1	831
+gr_19,47,62,6	duplicate(Warper)	Warp NPC#62-1	831
+gr_20,47,62,6	duplicate(Warper)	Warp NPC#63-1	831
+gr_21,47,62,6	duplicate(Warper)	Warp NPC#64-1	831
+gr_22,47,62,6	duplicate(Warper)	Warp NPC#65-1	831
+gr_23,47,62,6	duplicate(Warper)	Warp NPC#66-1	831
+gr_24,47,62,6	duplicate(Warper)	Warp NPC#67-1	831
+gr_25,47,62,6	duplicate(Warper)	Warp NPC#68-1	831
+gr_26,47,62,6	duplicate(Warper)	Warp NPC#69-1	831
+gr_27,47,62,6	duplicate(Warper)	Warp NPC#70-1	831
+gr_28,47,62,6	duplicate(Warper)	Warp NPC#71-1	831
+gr_29,47,62,6	duplicate(Warper)	Warp NPC#72-1	831
+gr_30,47,62,6	duplicate(Warper)	Warp NPC#73-1	831
+veins,220,132,3	duplicate(Warper)	Warp NPC#74-1	831
+quiz_02,345,387,6	duplicate(Warper)	Warp NPC#75-1	831
+yowi_town,205,180,4	duplicate(Warper)	Warp NPC#76-1	831
+
+//mapflags del Cuarto de DB
+1@dbroom	mapflag	nowarpto
+1@dbroom	mapflag	loadevent
+pvp_n_1-1	mapflag	nowarpto
+pvp_n_1-1	mapflag	loadevent
+//No teleport para mobs
+1@dbroom	mapflag	monster_noteleport
+pvp_n_1-1	mapflag	monster_noteleport
