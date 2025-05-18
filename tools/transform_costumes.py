@@ -7,7 +7,7 @@
 import mysql.connector
 
 class ItemRenewal:
-    def __init__(self, id, name_aegis, name_english, type, subtype, price_buy, price_sell, weight, location_costume_head_top, location_costume_head_mid, location_costume_head_low, location_costume_garment, view)
+    def __init__(self, id, name_aegis, name_english, type, subtype, price_buy, price_sell, weight, location_costume_head_top, location_costume_head_mid, location_costume_head_low, location_costume_garment, view):
         self.id = id
         self.name_aegis = name_aegis
         self.name_english = name_english
