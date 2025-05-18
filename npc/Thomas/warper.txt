@@ -1107,9 +1107,9 @@ L_noItems:
 							close;
 					}
 				case 7:
-				//DeadBranchStuff:
+				DeadBranchStuff:
 					set .@DBuser1,getmapusers("pvp_n_1-1");
-					set .@DBmob1,getmapmobs("pvp_n_1-1");
+					set .@DBmob1,mobcount("pvp_n_1-1");
 					mes "[ ^0770E9Warper xRO^000000 ]";
 					mes "Bienvenido a nuestras salas de Dead/Bloody Branch. En nuestras salas podr�s usar las branchs libremente.";
 					next;
