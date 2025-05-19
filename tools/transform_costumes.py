@@ -25,7 +25,7 @@ class ItemRenewal:
         self.unequip_script = unequip_script
         
     def __str__(self):
-        return f"ItemRenewal (id={self.id}, name_aegis={self.name_aegis})"
+        return f"ItemRenewal (id={self.id}, name_aegis={self.name_aegis}, equip_script={self.equip_script}, unequip_script={self.unequip_script})"
 
     def generate_prerenewal_insert(self):
         # Generate the insert statement for the pre-renewal database
