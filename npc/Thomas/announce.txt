@@ -1,6 +1,8 @@
 -	script	announcer-script	-1,{
 
+	OnInit:
 	set $npcname$, "[WawiRO]";
+	end;
 
 	OnMinute10:
 	OnMinute15:
