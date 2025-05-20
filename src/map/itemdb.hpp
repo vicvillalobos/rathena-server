@@ -3026,8 +3026,10 @@ enum e_random_item_group {
 	IG_LI_NYANGVINE_BOX1_38,
 	IG_LI_NYANGVINE_BOX2_38,
 	IG_LI_NYANGVINE_BOX3_38,
+	IG_NAMELESSCOINGBAG,
 
 	IG_MAX,
+	
 };
 
 /// Enum for bound/sell restricted selling

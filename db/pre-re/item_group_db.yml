@@ -11078,14 +11078,96 @@ Body:
                   Item: E_Giant_Fly_Wing
                 - Index: 2
                   Item: F_Giant_Fly_Wing
-    - Group: GIANT_FLY_WING2
+    - Group: NAMELESSCOINBAG
       SubGroups:
-          - SubGroup: 0
-            Algorithm: All
+          - SubGroup: 1
+            Algorithm: Random
             List:
                 - Index: 0
-                  Item: Giant_Fly_Wing
+                  Item: NAMELESS_COIN
+                  Amount: 10
+                  Rate: 20
                 - Index: 1
-                  Item: E_Giant_Fly_Wing
+                  Item: NAMELESS_COIN
+                  Amount: 11
+                  Rate: 20
                 - Index: 2
-                  Item: F_Giant_Fly_Wing
+                  Item: NAMELESS_COIN
+                  Amount: 12
+                  Rate: 20
+                - Index: 3
+                  Item: NAMELESS_COIN
+                  Amount: 13
+                  Rate: 20
+                - Index: 4
+                  Item: NAMELESS_COIN
+                  Amount: 14
+                  Rate: 20
+                - Index: 5
+                  Item: NAMELESS_COIN
+                  Amount: 15
+                  Rate: 20
+                - Index: 6
+                  Item: NAMELESS_COIN
+                  Amount: 16
+                  Rate: 20
+                - Index: 7
+                  Item: NAMELESS_COIN
+                  Amount: 17
+                  Rate: 20
+                - Index: 8
+                  Item: NAMELESS_COIN
+                  Amount: 18
+                  Rate: 20
+                - Index: 9
+                  Item: NAMELESS_COIN
+                  Amount: 19
+                  Rate: 20
+                - Index: 10
+                  Item: NAMELESS_COIN
+                  Amount: 20
+                  Rate: 10
+                - Index: 11
+                  Item: NAMELESS_COIN
+                  Amount: 21
+                  Rate: 10
+                - Index: 12
+                  Item: NAMELESS_COIN
+                  Amount: 22
+                  Rate: 10
+                - Index: 13
+                  Item: NAMELESS_COIN
+                  Amount: 23
+                  Rate: 10
+                - Index: 14
+                  Item: NAMELESS_COIN
+                  Amount: 24
+                  Rate: 10
+                - Index: 15
+                  Item: NAMELESS_COIN
+                  Amount: 25
+                  Rate: 10
+                - Index: 16
+                  Item: NAMELESS_COIN
+                  Amount: 26
+                  Rate: 10
+                - Index: 17
+                  Item: NAMELESS_COIN
+                  Amount: 27
+                  Rate: 10
+                - Index: 18
+                  Item: NAMELESS_COIN
+                  Amount: 28
+                  Rate: 10
+                - Index: 19
+                  Item: NAMELESS_COIN
+                  Amount: 29
+                  Rate: 10
+                - Index: 20
+                  Item: NAMELESS_COIN
+                  Amount: 30
+                  Rate: 10
+                - Index: 21
+                  Item: NAMELESS_COIN
+                  Amount: 50
+                  Rate: 1
