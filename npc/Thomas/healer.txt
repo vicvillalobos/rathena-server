@@ -24,7 +24,6 @@ ayothaya,201,190,6	duplicate(Buffer)	Healer#14	501,5,5
 hugel,91,149,5	duplicate(Buffer)	Healer#15	501,5,5
 moscovia,228,195,4	duplicate(Buffer)	Healer#16	501,5,5
 dicastes01,194,192,6	duplicate(Buffer)	Healer#17	501,5,5
-arena_4,143,105,5	duplicate(Buffer)	Healer BG#18	501,5,5
 brasilis,203,220,4	duplicate(Buffer)	Healer#19	501,5,5
 splendide,195,151,5	duplicate(Buffer)	Healer#20	501,5,5
 mid_camp,213,239,5	duplicate(Buffer)	Healer#21	501,5,5
