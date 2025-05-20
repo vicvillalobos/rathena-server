@@ -1,0 +1,195 @@
+prontera,161,185,4  script  Warper  831,{
+
+    set .@serverName$, "WawiRO";
+
+    sc_start 32,  240000, 10;  // Increase Agi
+	sc_start 30, 240000, 10; // Blessing
+	percentheal 105,105; 
+	repairall;
+    mes .@serverName$;
+    mes "Hey, "+strcharinfo(0)+"!";
+    mes "Where would you like to go?";
+    
+    switch(select("Cities:Dungeons:Fields")) {
+        case 1: // Dungeons
+            menu 	"Prontera (Capital of Midgard)",wprontera,
+                    "Alberta",walberta,
+                    "Aldebaran",waldebaran,
+                    "Amatsu",wamatsu,
+                    "Ayothaya",wayot,
+                    "Comodo",wcomodo,
+                    "Dicastes",wdiscastes,
+                    "Einbech (Mining Village)",weinbech,
+                    "Einbroch",weinbroch,
+                    "Geffen",wgeffen,
+                    "Gonryun",wgonryun,
+                    "Hugel",whugel,
+                    "Izlude",wizlude,
+                    "Jawaii",wjawaii,
+                    "Lighthalzen",wlightalzen,
+                    "Louyang",wlouyang,
+                    "Lutie",wxmas,	
+                    "Manuk",wmanuk,
+                    "Morroc",wmorroc,
+                    "Moscovia",wmoscovia,
+                    "Niflheim",wniflheim,
+                    "Payon",wpayon,
+                    "Prontera",wprontera,
+                    "Rachel",wafeltz,
+                    "Splendide",wsplendide,
+                    "Umbala",wumbala,
+                    "Veins",wveins,
+                    "Yuno",wyuno,
+                    "Dewata",wdewata;
+        case 2:
+            menu 	"Abbey, Cursed Monastery",wabbey,
+                    "Abyss Lakes",wabyss,
+                    "Amatsu Dungeon",ama,
+                    "Anthell",ant,
+                    "Ayothaya Dungeons",wayodun,
+                    "Beach Dungeon",beach,
+                    "Brasilis's Dungeon",wbradun,
+                    "Byalan Dungeon",byalan,
+                    "Clock Tower",clock,
+                    "Coal Mines",coal,
+                    "Culverts",culvert,
+                    "Einbroch Dungeons",weindun,
+                    "Gefenia",gefenia,
+                    "Geffen Dungeon",geffen,
+                    "Glast Heim",glast,
+                    "Gonryun Dungeon",gon,
+                    "Hidden Dungeon",hidden,
+                    "Ice Dungeon",iced,
+                    "Juperos Dungeons",wjuper,
+                    "Kiel Dungeons",wkieldun,
+                    "Lighthalzen",wlhzdun,
+                    "Louyang Dungeons",wloudun,
+                    "Magma Dungeon",magma,
+                    "Moscovia Dungeon",mosk,
+                    "Nydhogg's Dungeon",dnyd,
+                    "Orc Dungeon",orc,
+                    "Payon Dungeon",payon,
+                    "Pyramids",pyramids,
+                    "Rachel Sanctuary",rachels,
+                    "Sphinx",sphinx,
+                    "Sunken Ship",sunken,
+                    "Thanatos Tower",wthat,
+                    "Thor Volcano",wthor,
+                    "Toy Factory",toy,
+                    "Turtle Dungeon",turtle,
+                    "Umbala Dungeons",wumdun,
+                    "Discastes",wdis,
+                    "Dimensional Gorge",wsatan;
+    }
+
+
+//----------------------------------------
+//		Dungeons Sub Menu
+//----------------------------------------
+wabbey:
+    mes .@serverName$;
+    mes "Selecciona un Nivel.";
+    next;
+    menu 	"Level 1",dabbey1,
+            "Level 2",dabbey2,
+            "Level 3",dabbey3;
+
+wabyss:
+    mes .@serverName$;
+    mes "Selecciona un Nivel.";
+    next;
+    menu 	"Level 1",dabyss1,
+            "Level 2",dabyss2,
+            "Level 3",dabyss3;
+
+ama:
+    mes .@serverName$;
+    mes "Selecciona un Nivel.";
+    next;
+    menu 	"Level 1",dama1,
+            "Level 2",dama2,
+            "Level 3",dama3;
+ant:
+wayodun:
+beach:
+wbradun:
+byalan:
+clock:
+coal:
+culvert:
+weindun:
+gefenia:
+geffen:
+glast:
+gon:
+    mes .@serverName$;
+    mes "Selecciona un Nivel.";
+    next;
+    menu 	"Level 1",dgon1,
+            "Level 2",dgon2,
+            "Level 3",dgon3;
+hidden:
+iced:
+wjuper:
+wkieldun:
+wlhzdun:
+wloudun:
+magma:
+mosk:
+dnyd:
+orc:
+payon:
+pyramids:
+rachels:
+sphinx:
+sunken:
+wthat:
+wthor:
+toy:
+turtle:
+wumdun:
+wdis:
+wsatan:
+
+
+//----------------------------------------
+//		Town Warps
+//----------------------------------------
+
+wafeltz:	warp "rachel.gat",130,110;	callfunc "LastMapSave";
+walberta:	warp "alberta.gat",190,144;	callfunc "LastMapSave";
+waldebaran:	warp "aldebaran.gat",139,115;	callfunc "LastMapSave";
+wamatsu:	warp "amatsu.gat",198,84;	callfunc "LastMapSave";
+wayot:		warp "ayotaya.gat",150,163;	callfunc "LastMapSave";
+wcomodo:	warp "comodo.gat",209,143;	callfunc "LastMapSave";
+weinbech:	warp "einbech.gat",70,95;	callfunc "LastMapSave";
+weinbroch:	warp "einbroch.gat",64,200;	callfunc "LastMapSave";
+whugel:		warp "hugel.gat",96,145;	callfunc "LastMapSave";
+wlightalzen:	warp "lightalzen.gat",158,92;	callfunc "LastMapSave";
+wgonryun:	warp "gonryun.gat",160,121;	callfunc "LastMapSave";
+wgeffen:	warp "geffen.gat",119,59;	callfunc "LastMapSave";
+wizlude:	warp "izlude.gat",127,113;	callfunc "LastMapSave";
+wxmas:		warp "xmas.gat",147,134;	callfunc "LastMapSave";
+wjawaii:	warp "jawaii.gat",213,230;	callfunc "LastMapSave";
+wmorroc:	warp "morroc.gat",156,93;	callfunc "LastMapSave";
+wmoscovia:	warp "moscovia.gat",225,193;	callfunc "LastMapSave";
+wniflheim:	warp "niflheim.gat",85,154;	callfunc "LastMapSave";
+wpayon:		warp "payon.gat",181,224;	callfunc "LastMapSave";
+wprontera:	warp "prontera.gat",155,183;	callfunc "LastMapSave";
+wyuno:		warp "yuno.gat",157,51;		callfunc "LastMapSave";
+wumbala:	warp "umbala.gat",145,155;	callfunc "LastMapSave";
+wlouyang:	warp "louyang.gat",217,103;	callfunc "LastMapSave";
+wveins:		warp "veins.gat",216,123;	callfunc "LastMapSave";
+wmanuk:		warp "manuk.gat",281,240;	callfunc "LastMapSave";
+wsplendide:	warp "splendide.gat",200,148;	callfunc "LastMapSave";
+wbrasilis:	warp "brasilis.gat",196,219;	callfunc "LastMapSave";
+wdiscastes: 	warp "dicastes01.gat",198,189;	callfunc "LastMapSave";
+wdewata:	warp "dewata.gat",199,178;	callfunc "LastMapSave";
+wmalag:		warp "malangdo.gat",180,129;	callfunc "LastMapSave";
+
+}
+
+function	script	LastMapSave	{
+    getmapxy(warpmap$,warpmapx,warpmapy,0,strcharinfo(0));
+    end;
+} // End function
