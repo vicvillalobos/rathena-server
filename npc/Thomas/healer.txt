@@ -1,4 +1,4 @@
-prontera,151,187,6	script	Healer#01::Buffer	501,5,5,{
+prontera,150,185,6	script	Healer#01::Buffer	501,5,5,{
 OnTouch:
 	sc_start 32,  240000, 10;  // Increase Agi
 	sc_start 30, 240000, 10; // Blessing
@@ -35,7 +35,6 @@ louyang,220,109,4	duplicate(Buffer)	Healer#25	501,5,5
 alberta,113,60,6	duplicate(Buffer)	Healer#26	501,5,5
 yuno,155,198,6	duplicate(Buffer)	Healer#27	501,5,5
 dewata,198,183,6	duplicate(Buffer)	Healer#29	501,5,5
-Hyrule,131,189,6	duplicate(Buffer)	Healer#61	501,5,5
 veins,209,128,6	duplicate(Buffer)	Healer#62	501,5,5
 
 //Healer en DeadBranch Room
