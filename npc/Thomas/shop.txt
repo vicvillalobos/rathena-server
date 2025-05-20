@@ -1,0 +1,28 @@
+prontera,164,175,3	shop	Tool Dealer#T1-0	112,611:40,501:50,502:200,503:550,504:1200,505:5000,506:40,602:300,601:60,645:800,656:1500,657:3000,610:4000,533:600,717:600,716:600,715:600,7521:150,7522:150,7523:150,7524:300,1750:1,1752:3,1751:3
+
+
+
+aldebaran,147,130,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T0-1	112
+morocc,161,100,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-1	112
+dewata,192,177,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-2	112
+comodo,184,162,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-3	112
+ayothaya,202,203,8	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-4	112
+amatsu,228,215,3	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-5	112
+mora,115,88,3	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-6	112
+moscovia,228,194,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T3-5	112
+dicastes01,201,189,3	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-7	112
+lighthalzen,154,90,5	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-8	112
+gonryun,154,114,7	duplicate(Tool Dealer#T1-0)	Tool Dealer#T1-9	112
+geffen,124,70,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-1	112
+payon,187,225,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-2	112
+alberta,187,149,5	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-3	112
+izlude,122,111,5	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-4	112
+yuno,163,187,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-5	112
+umbala,140,157,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-6	112
+einbroch,71,198,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-7	112
+hugel,91,42,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-8	112
+rachel,124,107,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T2-9	112
+veins,211,134,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T3-1	112
+manuk,277,141,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T3-2	112
+splendide,205,144,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T3-3	112
+brasilis,199,213,4	duplicate(Tool Dealer#T1-0)	Tool Dealer#T3-4	112
