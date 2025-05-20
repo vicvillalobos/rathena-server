@@ -92,6 +92,4 @@ L_NO:
 	mes "Ok, vuelve cuando quieras.";
 	close;
 
-OnInit:
-waitingroom "Identificador",0;
-end;}
+}
