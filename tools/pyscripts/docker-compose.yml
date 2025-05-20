@@ -1,0 +1,9 @@
+services:
+    pyscripts:
+        image: python:3.11-slim
+        container_name: pyscripts
+        volumes:
+            - .:/app
+        environment:
+            - PYTHONUNBUFFERED=1
+        command: tail -f /dev/null
