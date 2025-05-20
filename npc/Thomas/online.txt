@@ -1,7 +1,7 @@
 prontera,141,181,6	script	User Online	858,{
 query_sql "SELECT `name` , `class` FROM `char` WHERE `online` = '1'", .@name$, .@class;
-    mes "^0000FF[Valkyrie RO]^000000";
-    mes "^666666Valkyrie RO el mejor servidor.^000000";
+    mes "^0000FF$servername$^000000";
+    mes "^666666$servername$ el mejor servidor.^000000";
     mes "Usuarios Online: " + getusers(1);
     mes "M�ximos Online: " + $peak_online;
     mes "";
