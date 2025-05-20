@@ -109,7 +109,7 @@ nada:
 
 //============================= Entradas =======================================
 
-prontera,147,172,5	duplicate(PVP_Warper)	Battle Recruiter#1	728
+prontera,147,175,5	duplicate(PVP_Warper)	Battle Recruiter#1	728
 payon,186,230,4	duplicate(PVP_Warper)	Battle Recruiter#2	728
 morocc,153,97,6	duplicate(PVP_Warper)	Battle Recruiter#3	728
 umbala,139,163,6	duplicate(PVP_Warper)	Battle Recruiter#4	728
