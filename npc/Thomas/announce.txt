@@ -4,10 +4,15 @@
 set .@npcname$, "[WawiRO]";
 
 OnMinute10:
+OnMinute15:
 OnMinute20:
+OnMinute25:
 OnMinute30:
+OnMinute35:
 OnMinute40:
+OnMinute45:
 OnMinute50:
+OnMinute55:
 OnMinute00:
 switch(rand(1,20)) {
 case 1:
