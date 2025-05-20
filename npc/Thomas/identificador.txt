@@ -1,4 +1,4 @@
-prontera,161,195,5	script	Identificador	899,{
+prontera,164,191,5	script	Identificador	899,{
 
 
 // Precio
