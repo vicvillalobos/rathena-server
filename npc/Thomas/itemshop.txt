@@ -1,1 +1,1 @@
-prontera,159,174,5  itemshop    Nameless Coin Shop  112,35000,18743:100
+prontera,159,174,5  itemshop    Nameless Coin Shop  48,7179,12114:1,12115:1,12116:1,12117:1
