@@ -23,7 +23,7 @@ prontera,147,191,4	script	Job Master#01::JOBMAS	502,{
 	if(Upper == 1 && Class >= Job_Lord_Knight) goto L_noReq;
 	if(SkillPoint != 0){
 		mes "Lo siento, por favor usa todos los puntos de skill antes de cambiar de job.";
-		mes "Estaré aquí esperándote para ayudarte a seguir avanzando en ValkyrieRO.";
+		mes "Estaré aquí esperándote para ayudarte a seguir avanzando en "+$servername$+".";
 		close;
 	}
 	if(JobLevel < 10) goto L_LvError;
@@ -155,7 +155,7 @@ prontera,147,191,4	script	Job Master#01::JOBMAS	502,{
 							break;
 					}
 					mes "Oh!~ Bienvenido/a de nuevo, ^E96D07"+strcharinfo(0)+"^000000.";
-					mes "Veo que estás listo/a para seguir con tu camino en ValkyrieRO. Por favor, selecciona tu siguiente job.";
+					mes "Veo que estás listo/a para seguir con tu camino en "+$servername$+". Por favor, selecciona tu siguiente job.";
 					next;
 					set @target_job, @job_opt[select(JobName(@job_opt[0]), JobName(@job_opt[1]))-1];
 					if(Class > Job_Novice_High && Class < Job_Lord_Knight) set @target_job, @target_job + 4001;
@@ -173,7 +173,7 @@ prontera,147,191,4	script	Job Master#01::JOBMAS	502,{
 			}
 			if(checkfalcon() || checkcart() || checkriding()) goto L_remove;
 			if((Class >=Job_Knight) && (Class <=Job_Crusader2)){
-				mes "¿Eh? ¿Tú de nuevo? Wooow!~ Que pronto crecen los jugadores de ValkyrieRO... Dime, ¿Quieres renacer ya?";
+				mes "¿Eh? ¿Tú de nuevo? Wooow!~ Que pronto crecen los jugadores de "+$servername$+"... Dime, ¿Quieres renacer ya?";
 				if(select("> ^002BA2¡Claro!^000000","> ^A20000Aún no.^000000")==1){
 					if(BaseLevel < 99 || JobLevel < 50) goto L_cantCh;
 					set lastJob, Class;
