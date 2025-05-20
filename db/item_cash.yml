@@ -41,6 +41,8 @@ Body:
             Price: 1000
           - Item: C_Wings_of_Michael
             Price: 1000
+          - Item: Love_Berry
+            Price: 1000
 Footer:
     Imports:
         - Path: db/import/item_cash.yml
