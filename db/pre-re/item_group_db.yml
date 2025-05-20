@@ -11078,9 +11078,9 @@ Body:
                   Item: E_Giant_Fly_Wing
                 - Index: 2
                   Item: F_Giant_Fly_Wing
-    - Group: NAMELESS_COIN_BAG
+    - Group: NAMELESSCOINBAG
       SubGroups:
-          - SubGroup: 0
+          - SubGroup: 1
             Algorithm: Random
             List:
                 - Index: 0
