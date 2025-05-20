@@ -12,7 +12,7 @@
 //= No comments yet
 //============================================================
 
-prontera,164,191,5	script	Platinum Skills	733,{
+prontera,161,193,5	script	Platinum Skills	733,{
 	mes "^9B7F11[ Platinum Skill NPC ]^000000";
 	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
 	mes "Puedo darte las skills especiales para tu job.";
