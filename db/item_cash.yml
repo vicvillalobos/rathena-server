@@ -37,6 +37,10 @@ Body:
       Items:
           - Item: Jumping_Poring
             Price: 1000
+    - Tab: New
+      Items:
+          - Item: Weird_Goatee
+            Price: 1000
 Footer:
     Imports:
         - Path: db/import/item_cash.yml
