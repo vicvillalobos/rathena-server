@@ -1,7 +1,7 @@
 -	script	announcer-script	-1,{
 
 
-set $@npcname$, "[WawiRO]";
+set $npcname$, "[WawiRO]";
 
 OnMinute10:
 OnMinute15:
@@ -17,13 +17,13 @@ OnMinute00:
 OnWhisperGlobal:
 switch(rand(1,3)) {
 	case 1:
-		announce $@npcname$+": Recuerda votar por el servidor cada 12 horas",bc_all;
+		announce $npcname$+": Recuerda votar por el servidor cada 12 horas",bc_all;
 		break;
 	case 2:
-		announce $@npcname$+": Recuerda usar @partysearch para buscar party, te puede ser util.",bc_all;
+		announce $npcname$+": Recuerda usar @partysearch para buscar party, te puede ser util.",bc_all;
 		break;
 	case 3:
-		announce $@npcname$+": Puedes revisar tus cooldown de los partyquests con @partyquest",bc_all;
+		announce $npcname$+": Puedes revisar tus cooldown de los partyquests con @partyquest",bc_all;
 		break;
 
 	}
