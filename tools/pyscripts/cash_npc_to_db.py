@@ -79,7 +79,7 @@ with alive_bar(len(shop_items), title="Processing items") as bar:
         # Append the item to the cash object
         cash_object["Body"][0]["Items"].append({
             "Item": item_name,
-            "Amount": item["amount"]
+            "Price": item["amount"]
         })
         bar()
     
