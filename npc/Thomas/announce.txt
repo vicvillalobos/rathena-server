@@ -1,9 +1,5 @@
 -	script	announcer-script	-1,{
 
-	OnInit:
-	set $servername$, "[WawiRO]";
-	end;
-
 	OnMinute10:
 	OnMinute15:
 	OnMinute20:
