@@ -43,6 +43,23 @@ Body:
             Price: 1000
           - Item: Love_Berry
             Price: 1000
+          - Item: Takius_Blindfold
+            Price: 1000
+          - Item: Pumpkin_Hat
+            Price: 1000
+          - Item: Baseball_Cap
+            Price: 1000
+          - Item: Phrygian_Cap
+            Price: 1000
+          - Item: Phrygian_Cap_
+            Price: 1000
+          - Item: Baseball_Cap_
+            Price: 1000
+          - Item: Coppola
+            Price: 1000
+          - Item: 5209
+            Price: 1000
+
 Footer:
     Imports:
         - Path: db/import/item_cash.yml
