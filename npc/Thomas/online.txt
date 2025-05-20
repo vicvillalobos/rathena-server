@@ -1,0 +1,33 @@
+prontera,141,181,6	script	User Online	858,{
+query_sql "SELECT `name` , `class` FROM `char` WHERE `online` = '1'", .@name$, .@class;
+    mes "^0000FF[Valkyrie RO]^000000";
+    mes "^666666Valkyrie RO el mejor servidor.^000000";
+    mes "Usuarios Online: " + getusers(1);
+    mes "M�ximos Online: " + $peak_online;
+    mes "";
+    mes "^c50000[Lista de Usuarios]^000000";
+    for( set .@a,0; .@a < getarraysize(.@name$); set .@a,.@a + 1)
+        mes "^0000FF"+.@name$[.@a]+ "^000000 | ^c50000Job: " +jobname(.@class[.@a])+".^000000";
+    close;
+OnInit:
+	do {
+		delwaitingroom;
+		waitingroom "Usuarios Online ("+getusers(1)+")",0;
+	sleep 5000;
+	} while(1);
+end;
+}
+
+
+-	script	#users	-1,{
+OnInit:
+	do {
+		if($peak_online<getusers(1)){
+		set $peak_online,getusers(1);
+		}
+	sleep 5000;
+	} while(1);
+end;
+
+
+}
