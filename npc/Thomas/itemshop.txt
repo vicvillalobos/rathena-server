@@ -1,0 +1,1 @@
+prontera,158,173,6  itemshop    Nameless Coin Shop  112,35000:0,18743:10
