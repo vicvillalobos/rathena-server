@@ -1,0 +1,97 @@
+prontera,161,195,5	script	Identificador	899,{
+
+
+// Precio
+// ========
+// Costo por identificar cada Item
+
+set @price, 40;
+
+
+// Nombre del NPC
+// ================
+// Nombre del NPC
+set @npcname$, "[^ff0000Identificador^000000]";
+
+
+// Script General
+// =========================
+
+mes @npcname$;
+mes "Yo puedo identificar tus items.";
+next;
+
+mes @npcname$;
+mes "Quieres que identifique tus items?";
+mes "Te costara "+@price+" Zeny cada item.";
+next;
+menu "Si, Quiero!",-,"No, Gracias...",L_NO;
+
+getinventorylist;
+set @identify, 0;
+for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+	if (@inventorylist_identify[@i] == 0) set @identify, @identify + 1;
+}
+
+if (@identify == 0) {
+	mes @npcname$;
+	mes "No tienes items sin identificar.";
+	close;
+}
+
+
+
+if (@identify < 2) {
+	set @total,@identify;
+	mes @npcname$;
+	mes "Solo tienes 1 item sin identificar en tu inventario.";
+	mes "Lo identificare por "+@price+" Zeny.";
+} else {
+	mes @npcname$;
+	set @total,@identify * @price;
+	mes "Tienes "+@identify+" items sin identificar en tu inventario.";
+	mes "Los identificare por "+@total+" Zeny.";
+}
+
+next;
+mes @npcname$;
+mes "Si tienes alguna ^00AA00Magnifier^000000, la cogere en lugar del Zeny.";
+mes "Empiezo?";
+next;
+menu "Si!",-,"Mejor no...",L_NO;
+
+if(Zeny < @total) {
+	mes @npcname$;
+	mes "No tienes suficiente Zeny.";
+	close;
+}
+
+getinventorylist;
+set @identified, 0;
+for(set @i, 0; @i < @inventorylist_count; set @i, @i + 1) {
+	if (@inventorylist_identify[@i] == 0) {
+		if (countitem(611) > 0) {
+			delitem 611,1;
+		} else {
+			set Zeny, Zeny - @price;
+		}
+		delitem2 @inventorylist_id[@i],1,0,0,0,0,0,0,0;
+		getitem @inventorylist_id[@i],1;
+		set @identified, @identified + 1;
+	}
+}
+
+mes @npcname$;
+mes "Bien, lo he identificado todo!";
+mes "He identificado un todal de "+@identified+" items.";
+mes "Adios~";
+close;
+
+L_NO:
+	mes @npcname$;
+	mes "Ok, vuelve cuando quieras.";
+	close;
+
+OnInit:
+waitingroom "Identificador",0;
+end;}
