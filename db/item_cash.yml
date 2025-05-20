@@ -38,9 +38,8 @@ Body:
           - Item: Jumping_Poring
             Price: 1000
 <<<<<<< HEAD
-    - Tab: New
-      Items:
           - Item: Weird_Goatee
+            Price: 1000
 =======
           - Item: C_Wings_of_Michael
 >>>>>>> 02b7f3435c789a2351033bf9863347d50985a203
