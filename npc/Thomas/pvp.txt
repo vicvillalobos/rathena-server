@@ -1,0 +1,142 @@
+-	script	PVP_Warper	-1,{
+
+mes "[ ^0065DFReclutador de Batalla^000000 ]";
+mes "Muy buenas! ^0000FF"+strcharinfo(0)+"^000000.";
+mes "Que te gustaria hacer el dia de hoy?";
+mes "";
+next;
+menu "Battleground Room ^000080[" + (getmapusers("quiz_02")) + " users]^000000",batleg,"PvP Room 1 ^000080[" + (getmapusers("guild_vs3")) + " users]^000000",pvp1,"PvP Room 2 ^000080[" + (getmapusers("pvp_n_1-5")) + " users]^000000",pvp2,"GvG Room ^000080[" + (getmapusers("guild_vs4")) + " users]^000000",gvg,"Salir.",nada;
+
+batleg:
+	warp "quiz_02",148,380;
+	close;
+
+pvp1:
+switch( rand(4) )
+			{
+				sc_end SC_ASSUMPTIO;
+				sc_end SC_SPIRIT;
+				sc_end SC_POEMBRAGI;
+				sc_end SC_SCRESIST;
+				sc_end SC_INCMSPRATE;
+				sc_end SC_INCALLSTATUS;
+				sc_end SC_BENEDICTIO;
+				sc_end SC_INCDEFRATE;
+				sc_end SC_OVERTHRUST;
+				sc_end SC_KAIZEL;
+				sc_end SC_KAAHI;
+				sc_end SC_KAITE;
+				sc_end SC_KAUPE;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_INCATKRATE;
+				sc_end SC_INCHIT;
+				sc_end SC_INCFLEE;
+				sc_end SC_WEAPONPERFECTION;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_ASSNCROS;
+				case 0: warp "guild_vs3",0,0; break;
+				case 1: warp "guild_vs3",0,0; break;
+				case 2: warp "guild_vs3",0,0; break;
+				case 3: warp "guild_vs3",0,0; break;
+
+}
+close;
+pvp2:
+switch( rand(4) )
+			{
+				sc_end SC_ASSUMPTIO;
+				sc_end SC_SPIRIT;
+				sc_end SC_POEMBRAGI;
+				sc_end SC_SCRESIST;
+				sc_end SC_INCMSPRATE;
+				sc_end SC_INCALLSTATUS;
+				sc_end SC_BENEDICTIO;
+				sc_end SC_INCDEFRATE;
+				sc_end SC_OVERTHRUST;
+				sc_end SC_KAIZEL;
+				sc_end SC_KAAHI;
+				sc_end SC_KAITE;
+				sc_end SC_KAUPE;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_INCATKRATE;
+				sc_end SC_INCHIT;
+				sc_end SC_INCFLEE;
+				sc_end SC_WEAPONPERFECTION;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_ASSNCROS;
+				case 0: warp "pvp_n_1-5",0,0; break;
+				case 1: warp "pvp_n_1-5",0,0; break;
+				case 2: warp "pvp_n_1-5",0,0; break;
+				case 3: warp "pvp_n_1-5",0,0; break;
+
+}
+close;
+
+
+gvg:
+switch( rand(4) )
+			{
+				sc_end SC_ASSUMPTIO;
+				sc_end SC_SPIRIT;
+				sc_end SC_WEAPONPERFECTION;
+				sc_end SC_POEMBRAGI;
+				sc_end SC_SCRESIST;
+				sc_end SC_INCMSPRATE;
+				sc_end SC_KAIZEL;
+				sc_end SC_KAAHI;
+				sc_end SC_KAUPE;
+				sc_end SC_KAITE;
+				sc_end SC_APPLEIDUN;
+				sc_end SC_INCALLSTATUS;
+				sc_end SC_OVERTHRUST;
+				sc_end SC_BENEDICTIO;
+				sc_end SC_INCDEFRATE;
+				sc_end SC_INCATKRATE;
+				sc_end SC_INCHIT;
+				sc_end SC_INCFLEE;
+				case 0: warp "guild_vs4",8,49; break;
+				case 1: warp "guild_vs4",91,49; break;
+				case 2: warp "guild_vs4",49,91; break;
+				case 3: warp "guild_vs4",49,8; break;
+
+			}
+close;
+nada:
+	close;
+
+}
+
+
+//============================= Entradas =======================================
+
+prontera,147,172,5	duplicate(PVP_Warper)	Battle Recruiter#1	728
+payon,186,230,4	duplicate(PVP_Warper)	Battle Recruiter#2	728
+morocc,153,97,6	duplicate(PVP_Warper)	Battle Recruiter#3	728
+umbala,139,163,6	duplicate(PVP_Warper)	Battle Recruiter#4	728
+comodo,184,152,6	duplicate(PVP_Warper)	Battle Recruiter#5	728
+niflheim,211,190,7	duplicate(PVP_Warper)	Battle Recruiter#6	728
+aldebaran,135,119,5	duplicate(PVP_Warper)	Battle Recruiter#7	728
+geffen,115,70,5	duplicate(PVP_Warper)	Battle Recruiter#8	728
+yuno,153,193,5	duplicate(PVP_Warper)	Battle Recruiter#9	728
+hugel,102,145,4	duplicate(PVP_Warper)	Battle Recruiter#10	728
+lighthalzen,152,94,6	duplicate(PVP_Warper)	Battle Recruiter#11	728
+einbroch,73,191,1	duplicate(PVP_Warper)	Battle Recruiter#12	728
+einbech,165,130,6	duplicate(PVP_Warper)	Battle Recruiter#13	728
+rachel,113,142,4	duplicate(PVP_Warper)	Battle Recruiter#14	728
+veins,210,119,6	duplicate(PVP_Warper)	Battle Recruiter#15	728
+nameless_n,158,179,6	duplicate(PVP_Warper)	Battle Recruiter#16	728
+louyang,213,109,6	duplicate(PVP_Warper)	Battle Recruiter#17	728
+gonryun,164,120,4	duplicate(PVP_Warper)	Battle Recruiter#18	728
+ayothaya,213,196,3	duplicate(PVP_Warper)	Battle Recruiter#19	728
+moscovia,225,197,3	duplicate(PVP_Warper)	Battle Recruiter#20	728
+xmas,142,133,6	duplicate(PVP_Warper)	Battle Recruiter#21	728
+amatsu,230,215,5	duplicate(PVP_Warper)	Battle Recruiter#22	728
+izlude,122,116,5	duplicate(PVP_Warper)	Battle Recruiter#23	728
+brasilis,195,221,6	duplicate(PVP_Warper)	Battle Recruiter#24	728
+manuk,264,199,6	duplicate(PVP_Warper)	Battle Recruiter#25	728
+splendide,196,153,5	duplicate(PVP_Warper)	Battle Recruiter#26	728
+mid_camp,224,235,4	duplicate(PVP_Warper)	Battle Recruiter#27	728
+new_1-1,58,114,4	duplicate(PVP_Warper)	Battle Recruiter#28	728
+dicastes01,192,191,5	duplicate(PVP_Warper)	Battle Recruiter#29	728
+alberta,49,245,4	duplicate(PVP_Warper)	Battle Recruiter#30	728
+einbech,66,93,5	duplicate(PVP_Warper)	Battle Recruiter#31	728
