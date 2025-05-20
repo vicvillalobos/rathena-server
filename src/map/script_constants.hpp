@@ -7154,6 +7154,7 @@
 	export_constant(IG_LI_NYANGVINE_BOX1_38);
 	export_constant(IG_LI_NYANGVINE_BOX2_38);
 	export_constant(IG_LI_NYANGVINE_BOX3_38);
+	export_constant(IG_NAMELESS_COIN_BAG);
 
 	/* unit stop walking */
 	export_constant(USW_NONE);
