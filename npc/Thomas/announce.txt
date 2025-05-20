@@ -1,0 +1,78 @@
+-	script	announcer-script	-1,{
+
+
+set .@npcname$, "[WawiRO]";
+
+OnMinute10:
+OnMinute20:
+OnMinute30:
+OnMinute40:
+OnMinute50:
+OnMinute00:
+switch(rand(1,20)) {
+case 1:
+	announce .@npcname$+": Recuerda votar por el servidor cada 12 horas",bc_all;
+	break;
+case 2:
+	announce .@npcname$+": Recuerda usar @partysearch para buscar party, te puede ser util.",bc_all;
+	break;
+case 3:
+	announce .@npcname$+": Puedes revisar tus cooldown de los partyquests con @partyquest",bc_all;
+	break;
+case 4:
+	announce .@npcname$+": Cualquier duda/sugerencia/queja puedes realizarla en el foro.",bc_all;
+	break;
+case 5:
+	announce .@npcname$+": En SelkRO tenemos mapas exclusivos de Battleground",bc_all;
+	break;
+case 6:
+	announce .@npcname$+": Al terminar BG obtendr�s Cash Points dependiendo si ganas o si pierdes",bc_all;
+	break;
+case 7:
+	announce .@npcname$+": En morocc hay un NPC que te ayuda a ingresar al [Morocc Party Quest]",bc_all;
+	break;
+case 8:
+	announce .@npcname$+": Contamos con BGs rotativos (TvT - Conquest - CTF)",bc_all;
+	break;
+case 9:
+	announce .@npcname$+": No le des tu contrase�a a nadie, el staff nunca te la pedir�",bc_all;
+	break;
+case 10:
+	announce .@npcname$+": Usa @request para enviar un mensaje a todos los miembros del staff conectados",bc_all;
+	break;
+case 11:
+	announce .@npcname$+": Vota porel servidor y obt�n libros de experiencia...",bc_all;
+	break;
+case 12:
+	announce .@npcname$+": Las SelkRO Costume Box[0] contienen items �nicos, que no puedes obtener de otra manera!",bc_all;
+	break;
+case 13:
+	announce .@npcname$+": Por 20 BGs jugados, te puedes llevar una SelkRO Box[0] o una SelkRO Costume Box[0]",bc_all;
+	break;
+case 14:
+	announce .@npcname$+": Participa en los Party Quests y obten increibles premios!",bc_all;
+	break;
+case 15:
+	announce .@npcname$+": Tip: Vota por el servidor y consigue pets �nicos",bc_all;
+	break;
+case 16:
+	announce .@npcname$+": Tip: �Sab�as que tenemos m�s de 50 quest hats?",bc_all;
+	break;
+case 17:
+	announce .@npcname$+": Tip: Las MvP Coins caen a 5% y se utilizan en la MvP Machine de prontera",bc_all;
+	break;
+case 18:
+	announce .@npcname$+": Tip: Canjea nuestras event coins en el NPC de prontera EventShop",bc_all;
+	break;
+case 19:
+	announce .@npcname$+": Participa de nuestros eventos autom�ticos y gana Event Coins",bc_all;
+	break;
+case 20:
+	announce .@npcname$+": Reporta cualqui�r tipo de Bug, el abuso de ellos provoca un baneo permanente",bc_all;
+	break;
+default: 
+	announce .@npcname$+": Reporta cualqui�r tipo de Bug, el abuso de ellos provoca un baneo permanente",bc_all;
+	break;
+	}
+
+}
