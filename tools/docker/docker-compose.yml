@@ -37,7 +37,7 @@ services:
             context: .
             dockerfile: Dockerfile
         environment:
-            BUILDER_CONFIGURE: "--enable-packetver=20180530 --enable-web-service=yes --enable-pre-re=yes"
+            BUILDER_CONFIGURE: "--enable-packetver=20180530 --enable-prere=yes"
 
     login:
         image: "rathena:local"
