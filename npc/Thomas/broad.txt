@@ -1,0 +1,113 @@
+prontera,158,187,3	script	Broadcast	791,{
+
+	set .@nombre$, "^00CCFF[ Broadcast ]^000000";
+	set .precio,100000;
+	if (.delay > gettimetick(2)) {
+		mes "Tienes que esperar "+ (.delay - gettimetick(2)) +" segundos antes de poder mandar tu mensaje. Sé paciente.";
+		close;
+	}
+	if (Baselevel < 90) {
+		mes "Tienes que ser al menos nivel 90 para utilizar el Broadcast.";
+		close;
+	}
+	mes .@nombre$;
+	mes "Hola, ^E96D07"+strcharinfo(0)+"^000000.";
+	mes "Yo puedo enviar un anuncio que verá todo el servidor a cambio de un poco de Zeny.";
+	next;
+	mes .@nombre$;
+	mes "El anuncio te costará ^D70202"+ .precio +"^000000.";
+	mes "Elige el mensaje global que más te convenga. Recuerda elegir bien antes de enviar tu mensaje.";
+	next;
+	switch(select("> ^8503BDCompra^000000:> ^DF5702Venta^000000:> ^089562Busqueda^000000:> ^727272Battleground^000000:> ^B20000PVP^000000:> Nada")) {
+	
+	//Seteamos array con el interes y color.
+	case 1: setarray .@r$[0],"COMPRA","0xE4A7FF"; break;
+	case 2: setarray .@r$[0],"VENDE","0xFE9900"; break;
+	case 3: setarray .@r$[0],"BUSCA","0x00FFA2"; break;
+	case 4: setarray .@r$[0],"BG","0xFFFFFF"; break;
+	case 5: setarray .@r$[0],"PVP","0xFFA4A4"; break;
+	case 6:
+		mes .@nombre$;
+		mes "Ok, vuelve cuando quieras y disfruta de tu estancia en ValkyrieRO.";
+		close;
+	}
+	mes .@nombre$;
+	if (zeny < .precio) {
+		mes "Lo siento pero no tienes Zeny suficiente. Regresa cuando tengas el zeny necesario para enviar tu mensaje.";
+		close;	
+	}
+	if (.delay > gettimetick(2)) {
+		mes "Tienes que esperar "+ (.delay - gettimetick(2)) +" segundos antes de poder mandar tu mensaje.";
+		close;
+	}
+
+	mes "Ok, escribe el mensaje que deseas enviar. Escríbelo lo mejor posible para que todos puedan leerlo claramente.";
+	next;
+	input .@mens$;
+	set .delay,gettimetick(2) + (60 * 1);
+	announce "[ "+ strcharinfo(0) +" ] [ "+ .@r$[0] +" ]: "+ .@mens$ +".",bc_all,.@r$[1];
+	set zeny,zeny-.precio;
+	close;
+}
+
+-	script	MobDie	-1,{
+OnInit:
+//Configure Mobs ID
+setarray .idmob[0],1002,1399;
+set .percent,100;//Porcentaje de drop. (1 a 100)
+set .dropid, 673;
+bindatcmd "mobid",strnpcinfo(3)+"::OnAtcommand";
+end;
+
+OnAtcommand:
+if (getgroupid() < 99) end;
+if (!$activado) {
+mes "Que deseas hacer GM?";
+switch(select("Activar Evento:Nada")) {
+case 1:
+	close2;
+	announce "El evento de drops acaba de comenzar...",bc_all;
+	sleep 5000;
+	announce "De ahora en adelante hasta que un admin lo desactive, el item "+getitemname(.dropid)+"",bc_all;
+	sleep 2000;
+	announce "será botado a un "+.percent+"% , por los siguientes monsters:",bc_all;
+	sleep 2000;
+	for(set .@i, 0; .@i < getarraysize(.idmob); .@i++) {
+	announce getmonsterinfo(.idmob[.@i],0)+"",bc_all;
+	sleep 2000;
+	}
+	set $activado, 1;
+	break;
+case 2:
+	close;
+	}
+}
+
+else if($activado == 1) {
+mes "Que deseas hacer GM?";
+switch(select("Desactivar Evento:Nada")) {
+case 1:
+	close2;
+	announce "El evento de drops fue desactivado por un administrador.",bc_all;
+	set $activado, 0;
+	break;
+case 2:
+	close;
+	}
+
+}
+
+
+OnNPCKillEvent:
+if(!$activado) end;
+        for ( set .@i, 0; .@i < getarraysize( .idmob ); set .@i, .@i + 1) {
+                if( killedrid == .idmob[.@i] ) {
+                        set .@percet, rand(1,100);
+                        if( .@percent <= .percent) {
+                        getitem .dropid,1;
+}
+                        end;
+                }
+        }
+end;
+}
