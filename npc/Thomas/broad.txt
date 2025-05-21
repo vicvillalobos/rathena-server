@@ -1,4 +1,4 @@
-prontera,158,187,3	script	Broadcast	791,{
+prontera,162,182,4	script	Broadcast	791,{
 
 	set .@nombre$, "^00CCFF[ Broadcast ]^000000";
 	set .precio,100000;
