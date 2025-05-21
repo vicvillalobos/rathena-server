@@ -1710,12 +1710,6 @@ ACMD_FUNC(costumeitem)
 	nullpo_retr(-1, sd);
 	memset(item_name, '\0', sizeof(item_name));
 
-	if (!battle_config.costume_reserved_char_id)
-	{
-		clif_displaymessage(fd, "Costume conversion is disabled. Set costume_reserved_char_id in eAmod.conf.");
-		return -1;
-	}
-
 	if (!message || !*message || (sscanf(message, "\"%99[^\"]\" %11d", item_name, &number) < 1 && sscanf(message, "%99s %11d", item_name, &number) < 1))
 	{
 		clif_displaymessage(fd, "Usage: @costumeitem <item name/ID> <amount>");
@@ -1770,8 +1764,8 @@ ACMD_FUNC(costumeitem)
 				item_tmp.nameid = item_id;
 				item_tmp.identify = 1;
 				item_tmp.card[0] = CARD0_CREATE;
-				item_tmp.card[2] = GetWord(battle_config.costume_reserved_char_id, 0);
-				item_tmp.card[3] = GetWord(battle_config.costume_reserved_char_id, 1);
+				item_tmp.card[2] = GetWord(2000000, 0);
+				item_tmp.card[3] = GetWord(2000000, 1);
 
 				if ((flag = pc_additem(sd, &item_tmp, get_count, LOG_TYPE_COMMAND)))
 					clif_additem(sd, 0, 0, flag);
