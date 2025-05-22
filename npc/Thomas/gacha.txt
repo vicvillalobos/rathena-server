@@ -1,4 +1,4 @@
-prontera,164,172,4	script	Nameless Gacha	562,{
+quiz_02,136,388,5	script	Nameless Gacha	562,{
 
 //============== NPC CONF ===================
 set .@cashcant,1000;	// Items needed cant.

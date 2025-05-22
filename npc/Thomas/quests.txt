@@ -10,7 +10,7 @@
 //= Item Preview script by ToastOfDoom.
 //============================================================
 					
-prontera,149,182,5	script	Nameless Quest Shop	72,{
+quiz_02,133,388,5	script	Nameless Quest Shop	72,{
 	mes "[^FFA500Nameless Quest Shop^000000]";
 	mes "�Hola y bienvenido/a!,";
 	close2;
