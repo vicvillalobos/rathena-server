@@ -65,6 +65,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 			default:
 				// TODO:
 				close;
+		}
 	} if( .@itemtype == IT_WEAPON ){
 		.@equip_lv = getequipweaponlv( .@part );
 
@@ -84,6 +85,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 			default:
 				// TODO:
 				close;
+		}
 	} else{
 		.@safe = 4;
 	}
