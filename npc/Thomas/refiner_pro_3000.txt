@@ -79,8 +79,13 @@ prontera,156,180,5	script	Refinador Batch	416,{
 				continue;
 			}
 
-			// 2) Refinamos y capturamos el plus final
+			// 2) Refinamos y capturamos el resultado
 			.@lastRef = callsub(RefinaUno, .@slotSel, .@goal);
+			if (.@lastRef < 0) {
+				// -1 = señal de “sin materiales”
+				mes "[Refinador] Te quedaste sin materiales.";
+				break;
+			}
 			dispbottom "[DBG] +"+.@lastRef+" alcanzado en esta copia";
 
 			// 3) Si llegamos al objetivo, rompemos y salimos
@@ -138,8 +143,12 @@ RefinaUno:
 		else if (.@lvlA == 2)		set .@mat,	1011;
 		else						set .@mat,	984;
 
-		if (countitem(.@mat) < 1) { dispbottom "[Falta] "+getitemname(.@mat); break; }
-		delitem	.@mat,	1;
+		if (countitem(.@mat) < 1) { 
+			dispbottom "[Falta] "+getitemname(.@mat)+" para continuar."; 
+			// retornamos -1 para indicar falta de material  
+			return -1;  
+		}
+		delitem  .@mat,  1;
 
 		.@act	= getequiprefinerycnt(.@slot);
 		.@rate	= callsub(Rate,	.@tipo,	.@lvlA,	.@act);
