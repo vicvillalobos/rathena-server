@@ -10,7 +10,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	mes "know what you want me to refine.";
 	next;
 
-	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES, EQI_ACC_L, EQI_ACC_R, EQI_HEAD_MID, EQI_HEAD_LOW;
+	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES;
 	for(.@i = 1; .@i<getarraysize(.@indices); ++.@i) {
 		if(getequipisequiped(.@indices[.@i])) {
 			.@menu$ = .@menu$ + getequipname(.@indices[.@i]) + "-[" + getequiprefinerycnt(.@indices[.@i]) + "]";
