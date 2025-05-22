@@ -127,7 +127,10 @@ RefinaUno:
 		else if (.@lvlA == 2)		set .@mat,	1011;
 		else						set .@mat,	984;
 
-		if (countitem(.@mat) < 1) { //dispbottom "[Falta] "+getitemname(.@mat); break; }
+		if (countitem(.@mat) < 1) {
+			//dispbottom "[Falta] "+getitemname(.@mat);
+			break;
+		}
 		delitem	.@mat,	1;
 
 		.@act	= getequiprefinerycnt(.@slot);
