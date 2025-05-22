@@ -35,17 +35,17 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	input  .@goal,  0,  10;
 	//  — Cancelar si goal = 0 —
     if (.@goal == 0) {
-        mes "[Refinador] Operación cancelada por usuario.";
+        mes "Operación cancelada por usuario.";
         close;
     }
     //  — Sólo permitimos 1…10 —
     if (.@goal < 1 || .@goal > 10) {
-        mes "[Error] El nivel debe estar entre +1 y +10.";
+        mes "El nivel debe estar entre +1 y +10.";
         close;
     }
     //  — Debe ser mayor que el refine actual —
     if (.@goal <= .@curRef) {
-        mes "[Error] Debe ser mayor al refine actual (+". .@curRef +").";
+        mes "Debe ser mayor al refine actual (+". .@curRef +").";
         close;
     }
 
