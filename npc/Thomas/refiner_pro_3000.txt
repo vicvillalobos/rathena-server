@@ -46,7 +46,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	// 3. ¿SOLO EQUIPADO O TODAS LAS COPIAS?
 	//----------------------------------------------------------
 	set .@mode, 1;
-	set .@extra, countitem(.@id_sel);   // copias en inventario
+	set .@extra, countitem(.@id_sel);
 	if (.@extra) {
 		mes "Copias adicionales: " + .@extra;
 		next;
@@ -75,18 +75,12 @@ prontera,154,180,5	script	Refinador PRO	416,{
 					break;
 				}
 			}
-			if (.@idx == -1) break;                  // no quedan
-			if (!(.@flag & (1 << .@slot_sel))) {     // no se equipa en ese slot
-				delitem .@id_sel, 1;
-				continue;
-			}
+			if (.@idx == -1) break;
+			if (!( .@flag & (1 << .@slot_sel) )) { delitem .@id_sel, 1; continue; }
 
 			if (getequipid(.@slot_sel)) unequip .@slot_sel;
 			equip .@idx;
-			if (getequipid(.@slot_sel) != .@id_sel) { // fallo al equipar
-				delitem .@id_sel, 1;
-				continue;
-			}
+			if (getequipid(.@slot_sel) != .@id_sel) { delitem .@id_sel, 1; continue; }
 
 			callsub RefinaCopy, .@slot_sel, .@goal, .@id_sel;
 			.@done++;
@@ -121,7 +115,7 @@ RefinaCopy:
 		delitem .@mat, 1;
 
 		.@cur  = getequiprefinerycnt(.@slot);
-		.@rate = callsub RateCalc, .@typ, .@lvl, .@cur;
+		.@rate = callsub( RateCalc, .@typ, .@lvl, .@cur );
 
 		if (rand(100) < .@rate) {
 			successrefitem .@slot;
