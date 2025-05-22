@@ -1,20 +1,31 @@
-prontera,143,171,6	script	Refinador PRO	813,{
+prontera,155,180,4	script	Refinador PRO	813,{
+
 	mes "[Refinador PRO]";
 	mes "Estos son tus ítems refinables equipados:";
 
-	// Listar ítems equipados refinables
-    set .@count, 0;
-    for (.@i = EQI_HEAD_TOP; .@i <= EQI_SHOES; .@i++) {
-        set .@id, getequipid(.@i);
-        set .@type, getiteminfo(.@id, ITEMINFO_TYPE);
-        set .@lvl, getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
-        if (.@id <= 0) continue;
-        if (.@type != IT_ARMOR && .@type != IT_WEAPON) continue; // Solo armaduras y armas
-        if (.@lvl < 1 || .@lvl > 4) continue; // Asegurarse que tenga nivel de refine válido
-        setarray .@slots[.@count], .@i;
-        setarray .@names$[.@count], getitemname(.@id);
-        .@count++;
-}
+	setarray .@checkslots[0], EQI_HEAD_TOP, EQI_HEAD_MID, EQI_HEAD_LOW,
+                         EQI_ARMOR, EQI_HAND_L, EQI_HAND_R,
+                         EQI_GARMENT, EQI_SHOES,
+                         EQI_ACC_L, EQI_ACC_R;
+
+	set .@count, 0;
+	for (.@j = 0; .@j < getarraysize(.@checkslots); .@j++) {
+		set .@i, .@checkslots[.@j];
+		set .@id, getequipid(.@i);
+		if (.@id <= 0) continue;
+
+		set .@type, getiteminfo(.@id, ITEMINFO_TYPE);
+		set .@lvl, getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+		set .@ref, getequiprefinerycnt(.@i);
+
+		if ((.@type != IT_ARMOR && .@type != IT_WEAPON) || (.@lvl < 1 || .@lvl > 4)) continue;
+
+		setarray .@slots[.@count], .@i;
+		setarray .@ids[.@count], .@id;
+		setarray .@names$[.@count], getitemname(.@id) + " [+" + .@ref + "]";
+		.@count++;
+	}
+
 	if (.@count == 0) {
 		mes "No tienes ítems refinables equipados.";
 		close;
@@ -23,7 +34,7 @@ prontera,143,171,6	script	Refinador PRO	813,{
 	next;
 	set .@select, select(.@names$) - 1;
 	set .@slot, .@slots[.@select];
-	set .@id, getequipid(.@slot);
+	set .@id, .@ids[.@select];
 	set .@current, getequiprefinerycnt(.@slot);
 	mes "Seleccionaste: ^0000FF" + getitemname(.@id) + "^000000 (+" + .@current + ")";
 	mes "¿A qué nivel quieres refinarlo?";
@@ -93,13 +104,12 @@ L_Refina:
 // FUNCIÓN PERSONALIZADA DE RATES SEGÚN TU IMAGEN
 // =====================================================
 function	script	RefineRate	{
-	// getarg(0)=level, getarg(1)=type, getarg(2)=ref actual
 	.@lvl = getarg(0);
 	.@type = getarg(1);
 	.@ref = getarg(2);
 
 	switch (.@ref) {
-		case 4: return (.@type == IT_ARMOR) ? 60 : (100); // +4 -> +5
+		case 4: return (.@type == IT_ARMOR) ? 60 : 100;
 		case 5: return (.@type == IT_ARMOR) ? 40 : ((.@lvl == 4) ? 40 : ((.@lvl == 3) ? 50 : 100));
 		case 6: return (.@type == IT_ARMOR) ? 30 : ((.@lvl == 4) ? 30 : ((.@lvl == 3) ? 30 : ((.@lvl == 2) ? 60 : 100)));
 		case 7: return (.@type == IT_ARMOR) ? 20 : ((.@lvl == 4) ? 15 : ((.@lvl == 3) ? 20 : ((.@lvl == 2) ? 40 : 60)));
