@@ -6,3 +6,13 @@ prontera,150,180,4	script	TestShield	413,{
 		mes "Nada equipado en mano izquierda.";
 	close;
 }
+
+prontera,152,180,4	script	DebugRefinable	1_M_SAGE,{
+	.@slot = EQI_HAND_L;
+	.@id = getequipid(.@slot);
+	mes "ID: " + .@id;
+	mes "Type: " + getiteminfo(.@id, ITEMINFO_TYPE);
+	mes "Equip Level: " + getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+	mes "Refine: " + getequiprefinerycnt(.@slot);
+	close;
+}
