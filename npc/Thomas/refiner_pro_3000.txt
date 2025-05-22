@@ -35,6 +35,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 
 		setarray .@equipped_slot[.@count], .@slot;
 		setarray .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@ref + "]";
+		setarray .@equipped_ref[.@count], .@ref;
 		.@count++;
 	}
 
@@ -44,7 +45,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	}
 
 	next;
-	// Construir lista para select
+	// Construir menú
 	set .@menu$, "";
 	for (.@j = 0; .@j < .@count; .@j++) {
 		.@menu$ += .@equipped_name$[.@j];
@@ -53,6 +54,16 @@ prontera,154,180,5	script	Refinador PRO	416,{
 
 	set .@choice, select(.@menu$) - 1;
 
-	mes "Elegiste: " + .@equipped_name$[.@choice];
+	// Mostrar refine actual y pedir input
+	set .@slot_sel, .@equipped_slot[.@choice];
+	set .@ref_current, .@equipped_ref[.@choice];
+	set .@id_sel, getequipid(.@slot_sel);
+
+	mes "Seleccionaste: ^0000FF" + getitemname(.@id_sel) + "^000000";
+	mes "Refinamiento actual: +" + .@ref_current;
+	mes "¿Hasta qué nivel deseas refinarlo?";
+	input .@ref_target, .@ref_current + 1, 10;
+
+	mes "Perfecto. Refinarás hasta +" + .@ref_target + ".";
 	close;
 }
