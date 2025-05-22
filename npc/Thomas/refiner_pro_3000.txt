@@ -1,32 +1,32 @@
-//============================================================
-// NPC  : Batch Refiner (sin UI) – v1.1 2025-05-22
-// Mapa : prontera 156 180  |  Sprite 4_M_REPAIRMAN (416)
-//============================================================
+//=================================================================
+// NPC : Refinador Batch (sin UI) – v1.2   2025-05-22
+// Mapa: prontera 156 180   |   Sprite 4_M_REPAIRMAN (416)
+//=================================================================
 prontera,156,180,5	script	Refinador Batch	416,{
 
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	// 1) LISTAR ÍTEMS EQUIPADOS REFINABLES
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	mes "[Refinador]";
-	setarray .@check[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L,
+	setarray .@slots[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L,
 	                     EQI_GARMENT,  EQI_SHOES, EQI_HEAD_MID, EQI_HEAD_LOW;
-	for (.@i = 0; .@i < getarraysize(.@check); .@i++) {
-		.@slot = .@check[.@i];
+	for (.@i = 0; .@i < getarraysize(.@slots); .@i++) {
+		.@slot = .@slots[.@i];
 		.@id   = getequipid(.@slot);
-		.@rfn  = getequiprefinerycnt(.@slot);      // -1 si no refinable
+		.@rfn  = getequiprefinerycnt(.@slot);     // -1 si no refinable
 		if (.@id <= 0 || .@rfn == -1) continue;
 
 		.@slot_a[.@n] = .@slot;
 		.@id_a[.@n]   = .@id;
 		.@rfn_a[.@n]  = .@rfn;
-		.@menu$ += getitemname(.@id) + "  [+" + .@rfn + "]:";  // menú
+		.@menu$ += getitemname(.@id) + "  [+" + .@rfn + "]:";   // para select()
 		.@n++;
 	}
 	if (!.@n) { mes "No llevas nada que pueda refinar."; close; }
 
-	//--------------------------------------------------------
-	// 2) SELECCIÓN + NIVEL OBJETIVO
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
+	// 2) SELECCIÓN + REFINE OBJETIVO
+	//-------------------------------------------------------------
 	.@pick    = select(.@menu$) - 1;
 	.@slotSel = .@slot_a[.@pick];
 	.@idSel   = .@id_a[.@pick];
@@ -34,46 +34,46 @@ prontera,156,180,5	script	Refinador Batch	416,{
 
 	mes "Ítem:^0080FF " + getitemname(.@idSel) + "^000000 (+"+.@curRef+")";
 	mes "¿A qué nivel de refine deseas llegar?";
-	input .@goal, .@curRef+1, 10;
+	input .@goal, .@curRef + 1, 10;
 	if (.@goal <= .@curRef) { mes "Debes elegir un número mayor al refine actual."; close; }
 
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	// 3) ¿SÓLO EQUIPADO O TODAS LAS COPIAS?
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	.@invCopies = countitem(.@idSel);
-	.@mode = 1; // por defecto solo equipado
+	.@mode = 1; // solo equipado
 	if (.@invCopies) {
 		mes "Tienes ^FFA500" + .@invCopies + "^000000 copia(s) en inventario.";
 		next;
 		.@mode = select("Sólo el equipado:Refinar todo (equipo + copias)");
 	}
 
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	// 4) REFINAR LA PIEZA EQUIPADA
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
 	callsub(RefinaUno, .@slotSel, .@goal);
 
-	//--------------------------------------------------------
-	// 5) REFINAR COPIAS DEL INVENTARIO
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
+	// 5) REFINAR COPIAS DEL INVENTARIO (si se eligió «todos»)
+	//-------------------------------------------------------------
 	if (.@mode == 2) {
 		set .@procesadas, 0;
 
 		while (countitem(.@idSel) > 0) {
 
-			// Asegura slot vacío
+			// Asegura slot libre
 			if (getequipid(.@slotSel)) unequip .@slotSel;
 
-			// Encuentra la siguiente copia
+			// Busca la siguiente copia
 			getinventorylist;
 			.@idx = -1;
 			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
 				if (@inventorylist_id[.@i] == .@idSel) {
-					.@idx = @inventorylist_index[.@i];
+					.@idx = @inventorylist_idx[.@i];   // ← índice REAL
 					break;
 				}
 			}
-			if (.@idx == -1) break;     // sin copias
+			if (.@idx == -1) break; // ya no hay copias
 
 			equip .@idx;
 			if (getequipid(.@slotSel) != .@idSel) break; // seguridad
@@ -87,9 +87,9 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	mes "[Refinador] Trabajo finalizado.";
 	close;
 
-	//--------------------------------------------------------
-	// ■ RefinaUno – procesa la pieza actual en 'slot'
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
+	// ■ RefinaUno – refina la pieza actualmente equipada en 'slot'
+	//-------------------------------------------------------------
 RefinaUno:
 	.@slot = getarg(0);
 	.@goal = getarg(1);
@@ -101,11 +101,11 @@ RefinaUno:
 
 	while (getequiprefinerycnt(.@slot) < .@goal) {
 
-		// Mineral según tipo/nivel
-		if (.@tipo == IT_ARMOR)            .@mat = 985;   // Elunium
-		else if (.@lvlA == 1)              .@mat = 1010;  // Phracon
-		else if (.@lvlA == 2)              .@mat = 1011;  // Emveretarcon
-		else                               .@mat = 984;   // Oridecon
+		// Mineral requerido
+		if (.@tipo == IT_ARMOR)       .@mat = 985;   // Elunium
+		else if (.@lvlA == 1)         .@mat = 1010;  // Phracon
+		else if (.@lvlA == 2)         .@mat = 1011;  // Emveretarcon
+		else                          .@mat = 984;   // Oridecon
 
 		if (countitem(.@mat) < 1) { dispbottom "[Falta] "+getitemname(.@mat); break; }
 		delitem .@mat, 1;
@@ -123,19 +123,19 @@ RefinaUno:
 		}
 	}
 
-	// Siempre deja libre el slot
+	// Deja la pieza fuera (refinada o rota) para seguir el ciclo
 	if (getequipid(.@slot) == .@id) unequip .@slot;
 	return;
 
-	//--------------------------------------------------------
-	// ■ Rate – devuelve % de éxito sin arrays literales
-	//--------------------------------------------------------
+	//-------------------------------------------------------------
+	// ■ Rate – devuelve % de éxito (sin literales de array)
+	//-------------------------------------------------------------
 Rate:
 	.@t   = getarg(0);
 	.@lvl = getarg(1);
 	.@cur = getarg(2);
 
-	// Armadura
+	// Armaduras
 	if (.@t == IT_ARMOR) {
 		switch (.@cur) {
 			case 0: return 100;
@@ -214,5 +214,5 @@ Rate:
 		case 9: return 5;
 		case 10: return 3;
 	}
-	return 0; // nunca debería llegar
+	return 0; // no debería llegar
 }
