@@ -65,7 +65,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	input .@ref_target, .@ref_current + 1, 10;
 
 	// Verificar cuántos hay en inventario SIN contar el equipado
-	set .@inventory_count, countitem(.@id_sel);
+	set .@inventory_count, countitem(.@id_sel)-1;
 
 	if (.@inventory_count >= 1) {
 		mes "Tienes " + .@inventory_count + " adicionales de este ítem en tu inventario.";
