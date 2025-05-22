@@ -19,7 +19,7 @@ prontera,152,180,4	script	DebugRefinable	415,{
 
 prontera,154,180,5	script	Refinador PRO	416,{
 
-		mes "[Refinador]";
+    mes "[Refinador]";
 	mes "Estos son tus ítems refinables equipados:";
 
 	setarray .@slots[0], EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_SHOES, EQI_GARMENT;
@@ -28,13 +28,13 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	for (.@i = 0; .@i < getarraysize(.@slots); .@i++) {
 		.@slot = .@slots[.@i];
 		.@id = getequipid(.@slot);
+		.@ref = getequiprefinerycnt(.@slot);
 
 		if (.@id <= 0) continue;
-		if (getequipisenableref(.@slot) == 0) continue;
+		if (.@ref == -1) continue; // No es refinable
 
-		.@refine = getequiprefinerycnt(.@slot);
 		set .@equipped_slot[.@count], .@slot;
-		set .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@refine + "]";
+		set .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@ref + "]";
 		.@count++;
 	}
 
