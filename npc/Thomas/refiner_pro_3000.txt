@@ -112,7 +112,7 @@ RefinaCopy:
 	.@lvl = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
 
 	while (getequiprefinerycnt(.@slot) < .@goal) {
-
+		sleep 1000;
 		if (.@typ == IT_ARMOR)         set .@mat, 985;
 		else if (.@lvl == 1)           set .@mat, 1010;
 		else if (.@lvl == 2)           set .@mat, 1011;
