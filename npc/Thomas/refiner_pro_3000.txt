@@ -122,8 +122,10 @@ RefinaUno:
 
 		.@act	= getequiprefinerycnt(.@slot);
 		.@rate	= callsub(Rate,	.@tipo,	.@lvlA,	.@act);
+		.@randomnum = rand(100);
 
-		if (rand(100) < .@rate) {
+		dispbottom	"[RATE] "+.@rate+" -> [RAND] "+.@randomnum;
+		if (.@randomnum < .@rate) {
 			successrefitem	.@slot;
 			dispbottom	"[OK] "+getitemname(.@id)+" -> +"+(.@act+1);
 		} else {
