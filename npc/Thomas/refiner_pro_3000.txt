@@ -106,7 +106,7 @@ RefinaCopy:
 	.@goal = getarg(1);
 	.@id   = getarg(2);
 
-	if (getequipid(.@slot) != .@id) end;
+	if (getequipid(.@slot) != .@id) return;
 
 	.@typ = getiteminfo(.@id, ITEMINFO_TYPE);
 	.@lvl = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
@@ -136,7 +136,7 @@ RefinaCopy:
 
 	// Siempre dejar la pieza fuera para la siguiente iteración
 	if (getequipid(.@slot) == .@id) unequip .@slot;
-	end;
+	return;
 
 	//----------------------------------------------------------
 	// ► RateCalc – devuelve % de éxito
