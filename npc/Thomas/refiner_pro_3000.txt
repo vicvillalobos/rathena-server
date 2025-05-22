@@ -126,6 +126,7 @@ RefinaUno:
 
 		dispbottom	"[RATE] "+.@rate+" -> [RAND] "+.@randomnum;
 		dispbottom	"[Item Level] "+.@lvlA;
+		dispbottom	"[Item Type] "+.@tipo;
 		if (.@randomnum < .@rate) {
 			successrefitem	.@slot;
 			dispbottom	"[OK] "+getitemname(.@id)+" -> +"+(.@act+1);
