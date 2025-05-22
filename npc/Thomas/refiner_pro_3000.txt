@@ -1,99 +1,147 @@
-// ===============================================================
-// NPC : Refinador PRO 3000
-// Autor : Thomas / ChatGPT Fix
-// Mapa  : prontera (154,180)  Sprite 416 (4_M_REPAIRMAN)
-// ===============================================================
-prontera,154,180,5	script	Refinador PRO	416,{
-	mes "[Refiner PRO]";
-	mes "I'm the Armsmith.";
-	mes "I can refine all kinds of weapons, armor and equipment, so let me";
-	mes "know what you want me to refine.";
-	next;
+//============================================================
+// NPC  : Batch Refiner (sin UI) – v1.0 2025-05-22
+// Mapa : prontera 156 180        |  Sprite 4_M_REPAIRMAN (416)
+// Autor: ChatGPT (pedido de Thomas)
+//============================================================
+prontera,156,180,5	script	Refinador Batch	416,{
 
-	setarray .@indices[1], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_L, EQI_HAND_R, EQI_GARMENT, EQI_SHOES;
-	for(.@i = 1; .@i<getarraysize(.@indices); ++.@i) {
-		if(getequipisequiped(.@indices[.@i])) {
-			.@menu$ = .@menu$ + getequipname(.@indices[.@i]) + " [+" + getequiprefinerycnt(.@indices[.@i]) + "]";
-			.@equipped = 1;
+	//--------------------------------------------------------
+	// 1) LISTAR SLOTS EQUIPADOS CON ÍTEMS REFINABLES
+	//--------------------------------------------------------
+	mes "[Refinador]";
+	setarray .@check[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L,
+	                   EQI_GARMENT, EQI_SHOES, EQI_HEAD_MID, EQI_HEAD_LOW;
+	for (.@i = 0; .@i < getarraysize(.@check); .@i++) {
+		.@slot = .@check[.@i];
+		.@id   = getequipid(.@slot);
+		.@cnt  = getequiprefinerycnt(.@slot);   // −1 si no refinable
+		if (.@id <= 0 || .@cnt == -1) continue;
+		.@menu$ += getitemname(.@id) + "  [+" + .@cnt + "]";
+		.@slot_a[.@n] = .@slot;
+		.@id_a[.@n]   = .@id;
+		.@cnt_a[.@n]  = .@cnt;
+		.@n++;
+		.@menu$ += ":";
+	}
+	if (.@n == 0) { mes "No llevas nada que pueda refinar."; close; }
+
+	//--------------------------------------------------------
+	// 2) SELECCIONAR ÍTEM Y NIVEL OBJETIVO
+	//--------------------------------------------------------
+	.@pick    = select(.@menu$) - 1;
+	.@slotSel = .@slot_a[.@pick];
+	.@idSel   = .@id_a[.@pick];
+	.@curRef  = .@cnt_a[.@pick];
+
+	mes "Ítem:^0055FF " + getitemname(.@idSel) + "^000000 (+" + .@curRef + ")";
+	mes "¿A qué nivel de refine quieres llegar?";
+	input .@goal, .@curRef+1, 10;
+	if (.@goal <= .@curRef) { mes "El refine objetivo debe ser mayor al actual."; close; }
+
+	//--------------------------------------------------------
+	// 3) ¿SÓLO EQUIPADO O TODAS LAS COPIAS?
+	//--------------------------------------------------------
+	.@invCopies = countitem(.@idSel);          // copias en inventario
+	.@mode = 1;                                // 1 = sólo equipado
+	if (.@invCopies) {
+		mes "Tienes ^FF7700"+.@invCopies+"^000000 copias extra en inventario.";
+		next;
+		.@mode = select("Sólo el equipado:Refinar todos (equipo + copias)");
+	}
+
+	//--------------------------------------------------------
+	// 4) REFINAR LA PIEZA EQUIPADA
+	//--------------------------------------------------------
+	callsub RefinaUno, .@slotSel, .@goal;
+
+	//--------------------------------------------------------
+	// 5) REFINAR COPIAS (si corresponde)
+	//--------------------------------------------------------
+	if (.@mode == 2) {
+		set .@procesadas, 0;
+
+		while (countitem(.@idSel) > 0) {
+
+			// Asegura el slot libre y busca siguiente copia
+			if (getequipid(.@slotSel)) unequip .@slotSel;
+
+			getinventorylist;
+			.@idx = -1;
+			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+				if (@inventorylist_id[.@i] == .@idSel) {
+					.@idx = @inventorylist_index[.@i];
+					break;
+				}
+			}
+			if (.@idx == -1) break;           // no quedan copias
+
+			equip .@idx;
+			if (getequipid(.@slotSel) != .@idSel) break; // por seguridad
+
+			callsub RefinaUno, .@slotSel, .@goal;
+			.@procesadas++;
 		}
-		.@menu$ = .@menu$ + ":";
-	}
-	if (.@equipped == 0) {
-		mes "["+ .@npc_name$ +"]";
-		mes "I don't think I can refine any items you have...";
-		close;
-	}
-	.@part = .@indices[select(.@menu$)];
-	if(!getequipisequiped(.@part)) { //custom check
-		mes "["+ .@npc_name$ +"]";
-		mes "You're not wearing";
-		mes "anything there that";
-		mes "I can refine.";
-		emotion ET_FRET;
-		close;
-	}
-	//Check if the item is refinable...
-	if(!getequipisenableref(.@part)) {
-		mes "["+ .@npc_name$ +"]";
-		mes "I don't think I can";
-		mes "refine this item at all...";
-		close;
-	}
-	//Check to see if the items is already +10
-	if(getequiprefinerycnt(.@part) >= 10) {
-		mes "["+ .@npc_name$ +"]";
-		mes "I can't refine this";
-		mes "any more. This is as";
-		mes "refined as it gets!";
-		close;
+		mes "[Refinador] "+.@procesadas+" copia(s) procesadas.";
 	}
 
-	.@refineitemid = getequipid(.@part); // save id of the item
-	.@refinerycnt = getequiprefinerycnt(.@part); //save refinery count
-	setarray .@card[0], getequipcardid(.@part,0), getequipcardid(.@part,1), getequipcardid(.@part,2), getequipcardid(.@part,3);
-	.@price = getequiprefinecost(.@part, REFINE_COST_NORMAL, REFINE_ZENY_COST);
-	.@material = getequiprefinecost(.@part, REFINE_COST_NORMAL, REFINE_MATERIAL_ID);
-	.@itemtype = getiteminfo( .@refineitemid, ITEMINFO_TYPE );
+	mes "[Refinador] Trabajo finalizado.";
+	close;
 
-	if( .@itemtype == IT_ARMOR ){
-		.@equip_lv = getequiparmorlv( .@part );
+	//--------------------------------------------------------
+	// ■ Sub-rutina RefinaUno – refina la pieza equipada en slot
+	//--------------------------------------------------------
+RefinaUno:
+	.@slot = getarg(0);              // slot equipado
+	.@goal = getarg(1);              // refine objetivo
+	.@id   = getequipid(.@slot);
+	if (.@id == 0) return;           // nada equipado
 
-		switch( .@equip_lv ){
-			case 1:
-				.@safe = 4;
-				break;
-			default:
-				// TODO:
-				close;
+	.@tipo = getiteminfo(.@id, ITEMINFO_TYPE);
+	.@lvlA = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+
+	while (getequiprefinerycnt(.@slot) < .@goal) {
+
+		//— Material según tipo / nivel
+		if (.@tipo == IT_ARMOR)            .@mat = 985;          // Elunium
+		else if (.@lvlA == 1)              .@mat = 1010;         // Phracon
+		else if (.@lvlA == 2)              .@mat = 1011;         // Emveretarcon
+		else                               .@mat = 984;          // Oridecon
+
+		if (countitem(.@mat) < 1) { dispbottom "[Falta] "+getitemname(.@mat); break; }
+		delitem .@mat,1;
+
+		.@actual = getequiprefinerycnt(.@slot);
+		.@rate   = callsub Rate, .@tipo, .@lvlA, .@actual;
+
+		if (rand(100) < .@rate) {
+			successrefitem .@slot;
+			dispbottom "[OK] "+getitemname(.@id)+" -> +"+(.@actual+1);
+		} else {
+			failedrefitem .@slot;
+			dispbottom "[ROTO] "+getitemname(.@id);
+			break;
 		}
-	} if( .@itemtype == IT_WEAPON ){
-		.@equip_lv = getequipweaponlv( .@part );
-
-		switch( .@equip_lv ){
-			case 1:
-				.@safe = 7;
-				break;
-			case 2:
-				.@safe = 6;
-				break;
-			case 3:
-				.@safe = 5;
-				break;
-			case 4:
-				.@safe = 4;
-				break;
-			default:
-				// TODO:
-				close;
-		}
-	} else{
-		.@safe = 4;
 	}
 
-	mes .@refineitemid;
-	mes .@refinerycnt;
-	mes .@price;
-	mes .@material;
-	mes .@itemtype;
-	mes .@equip_lv;
-} // FIN NPC
+	// Deja la pieza fuera (refinada o rota) para seguir el ciclo
+	if (getequipid(.@slot) == .@id) unequip .@slot;
+	return;
+
+	//--------------------------------------------------------
+	// ■ Rate – tabla de % de éxito (similar al refiner oficial)
+	//--------------------------------------------------------
+Rate:
+	.@t   = getarg(0);
+	.@lvl = getarg(1);
+	.@cur = getarg(2);
+
+	if (.@t == IT_ARMOR) {           // Armaduras
+		return ( [0,100,100,100,70,50,40,30,20,10,5] )[.@cur];
+	}
+
+	// Armas lvl 1-4
+	if (.@lvl == 1) return ( [0,100,100,100,90,80,70,60,40,20,10] )[.@cur];
+	if (.@lvl == 2) return ( [0,100,100,100,90,70,50,40,30,20,10] )[.@cur];
+	if (.@lvl == 3) return ( [0,100,100,100,80,60,40,20,15,10,5]  )[.@cur];
+	/* lvl 4 */     return ( [0,100,100,100,70,50,30,15,10,5,3]   )[.@cur];
+}
