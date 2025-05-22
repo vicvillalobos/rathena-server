@@ -52,40 +52,48 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	callsub(RefinaUno,	.@slotSel,	.@goal);
 
 	//----------------------------------------------------------
-	//   Modo 2 – Refino en batch usando el ID directamente
+	//   Modo 2 – Refino en batch con límite fijo
 	//----------------------------------------------------------
 	if (.@mode == 2) {
+		// 1) Contamos cuántas copias hay
+		.@total = countitem(.@idSel);
 		.@procesadas = 0;
-		dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
+		dispbottom "[DBG] Batch iniciado – itemID=" + .@idSel + 
+				" goal=+" + .@goal + 
+				" | copias encontradas=" + .@total;
 
-		enable_items;  // Permitir equip dentro de NPC :contentReference[oaicite:1]{index=1}
+		enable_items;  // permitir equip dentro del NPC
 
-		// Mientras queden ítems de ese ID en el inventario
-		while (countitem(.@idSel) > 0) {
-			dispbottom "[DBG] countitem(" + .@idSel + ")=" + countitem(.@idSel);
+		// 2) Procesamos cada copia exactamente una vez
+		for (.@i = 0; .@i < .@total; .@i++) {
+			dispbottom "[DBG] Procesando copia " + (.@i+1) + "/" + .@total;
 
-			// Intento equipar por ID, no por índice
-			dispbottom "[DBG] Equipando itemID=" + .@idSel;
+			// 2.1) Equipar por ID (el engine elige la primera copia disponible)
+			dispbottom "[DBG] Intentando equipar itemID=" + .@idSel;
 			equip .@idSel;
-			sleep2 200;  // Pequeña pausa para que el servidor procese el equip
-
-			// Compruebo si el equip tuvo éxito
+			sleep2 200;
 			if (getequipid(.@slotSel) != .@idSel) {
-				dispbottom "[Error] No se pudo equipar itemID=" + .@idSel;
-				break;
+				dispbottom "[Error] No pudo equiparse itemID=" + .@idSel;
+				continue;
 			}
-			dispbottom "[DBG] Equip OK, refinando +"+ .@goal;
+			dispbottom "[DBG] Equip OK";
 
-			// Refinamos con tu subrutina
+			// 2.2) Refinar la copia equipada
+			dispbottom "[DBG] Llamando RefinaUno(slot=" + .@slotSel + 
+					", goal=+" + .@goal + ")";
 			callsub(RefinaUno, .@slotSel, .@goal);
-			dispbottom "[DBG] Refinado terminado para itemID=" + .@idSel;
+			dispbottom "[DBG] Retornó de RefinaUno";
 
 			.@procesadas++;
 		}
 
 		disable_items;
-		dispbottom "[DBG] Batch finished – total processed=" + .@procesadas;
+
+		// 3) Reporte final
+		dispbottom "[DBG] Batch finalizado – procesadas=" + .@procesadas + 
+				" de " + .@total;
 	}
+
 
 	mes	"[Refinador] Trabajo finalizado.";
 	close;
