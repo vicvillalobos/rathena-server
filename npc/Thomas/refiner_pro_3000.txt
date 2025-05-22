@@ -1,12 +1,17 @@
 prontera,154,180,5	script	Refinador PRO	416,{
 
-	// 1) LISTAR
+	//---------------------------------------------------------------
+	// LISTAR SLOTS REFINABLES EQUIPADOS
+	//---------------------------------------------------------------
 	mes "[Refinador]";
 	mes "Ítems refinables equipados:";
+
 	setarray .@slots[0], EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_SHOES, EQI_GARMENT;
 	set .@cnt,0;
 	for (.@i=0;.@i<getarraysize(.@slots);.@i++){
-		.@s=.@slots[.@i]; .@id=getequipid(.@s); .@r=getequiprefinerycnt(.@s);
+		.@s=.@slots[.@i];
+		.@id=getequipid(.@s);
+		.@r=getequiprefinerycnt(.@s);
 		if (.@id<=0||.@r==-1) continue;
 		setarray .@slot_eq[.@cnt],.@s;
 		setarray .@id_eq[.@cnt],.@id;
@@ -14,97 +19,144 @@ prontera,154,180,5	script	Refinador PRO	416,{
 		setarray .@name$[.@cnt],getitemname(.@id)+" [+"+.@r+"]";
 		.@cnt++;
 	}
-	if (.@cnt==0){ mes "No hay nada refinable."; close; }
+	if (!.@cnt){ mes "Nada refinable."; close; }
 
-	// 2) MENÚ
+	//---------------------------------------------------------------
+	// MENÚ
+	//---------------------------------------------------------------
 	next;
 	set .@m$,""; for (.@j=0;.@j<.@cnt;.@j++) .@m$+=.@name$[.@j]+((.@j<.@cnt-1)?":":"");
-	set .@pick,select(.@m$)-1;
-	set .@slot_sel,.@slot_eq[.@pick];
-	set .@id_sel,.@id_eq[.@pick];
-	set .@r_now,.@r_eq[.@pick];
+	set .@pick, select(.@m$)-1;
 
-	// 3) NIVEL META
+	set .@slot_sel, .@slot_eq[.@pick];
+	set .@id_sel,   .@id_eq[.@pick];
+	set .@r_now,    .@r_eq[.@pick];
+
 	mes "Item: ^0000FF"+getitemname(.@id_sel)+"^000000  (+"+.@r_now+")";
-	mes "¿Hasta qué refine deseas llegar?";
-	input .@goal,.@r_now+1,10;
+	mes "¿Nivel meta?"; input .@goal, .@r_now+1, 10;
 
-	// 4) COPIAS
-	set .@copies,countitem(.@id_sel)-1; if (.@copies<0) set .@copies,0;
-	if (.@copies) { mes "Tienes "+.@copies+" copias."; mes "¿Refinar solo el equipado o todos?"; next;
-		set .@mode,select("Sólo equipado:Todos"); }
-	else set .@mode,1;
+	//---------------------------------------------------------------
+	// ¿REFINAR SOLO EQUIPADO O TODOS?
+	//---------------------------------------------------------------
+	set .@copies, countitem(.@id_sel); // todas las copias en inventario
+	if (.@copies){
+		mes "Copias extra: "+.@copies;
+		next;
+		set .@mode, select("Solo el equipado:Todos");
+	}else set .@mode, 1;
 
-	// 5) EQUIPADO
-	switch(callsub(RefinaOne,.@slot_sel,.@goal)){
-		case 0: mes "Se acabó el mineral para el equipado."; break;
-		case 1: mes "El equipado se rompió."; break;
-		case 2: mes "Equipado llegó a +"+.@goal+"."; break;
-	}
+	//---------------------------------------------------------------
+	// REFINAR EQUIPADO
+	//---------------------------------------------------------------
+	callsub RefinaOne, .@slot_sel, .@goal;
 
-	// 6) COPIAS
-	if (.@mode==2 && .@copies){
-		getinventorylist; set .@done,0;
-		for (.@i=0;.@i<@inventorylist_count;.@i++){
-			if (@inventorylist_id[.@i]!=.@id_sel) continue;
-			.@idx=@inventorylist_idx[.@i];
-			unequip .@slot_sel; equip .@idx;
-			if (getequipid(.@slot_sel)!=.@id_sel) continue;
-			switch(callsub(RefinaOne,.@slot_sel,.@goal)){
-				case 0: mes "Sin mineral al procesar una copia."; break;
-				case 1: /* rota: continuar */ break;
-				case 2: /* ok */ break;
+	//---------------------------------------------------------------
+	// REFINAR TODAS LAS COPIAS
+	//---------------------------------------------------------------
+	if (.@mode == 2){
+		set .@procesadas, 0;
+		while (countitem(.@id_sel) > 0){
+			// Obtener índice de la primera copia disponible
+			getinventorylist;
+			set .@idx, -1;
+			for (.@i=0;.@i<@inventorylist_count;.@i++){
+				if (@inventorylist_id[.@i]==.@id_sel){
+					.@idx = @inventorylist_idx[.@i];
+					break;
+				}
 			}
-			unequip .@slot_sel; .@done++;
+			if (.@idx == -1) break; // no debería pasar
+
+			unequip .@slot_sel;
+			equip   .@idx;
+
+			if (getequipid(.@slot_sel) != .@id_sel){
+				dispbottom "No se pudo equipar la copia, saltando.";
+				continue;
+			}
+
+			callsub RefinaOne, .@slot_sel, .@goal;
+			unequip .@slot_sel;
+			.@procesadas++;
 		}
-		mes .@done+" copias procesadas.";
+		mes .@procesadas+" copias procesadas.";
 	}
-	mes "Proceso finalizado."; close;
 
-//------------------------------------------------------------------
-// RefinaOne  → 0 falta mineral | 1 roto | 2 completo
-//------------------------------------------------------------------
+	mes "Proceso finalizado.";
+	close;
+
+//--------------------------------------------------------------
+// RefinaOne: refina hasta meta o hasta que falte mineral.
+//   Devuelve 0 = falta mineral ; 1 = roto ; 2 = completado
+//--------------------------------------------------------------
 RefinaOne:
-	.@s=getarg(0); .@goal=getarg(1); .@id=getequipid(.@s);
+	.@s    = getarg(0);
+	.@goal = getarg(1);
+	.@id   = getequipid(.@s);
 	if (!.@id) return 1;
-	.@t=getiteminfo(.@id,ITEMINFO_TYPE); .@lvl=getiteminfo(.@id,ITEMINFO_EQUIP_LEVEL);
 
-	while (getequiprefinerycnt(.@s)<.@goal){
-		if (.@t==IT_ARMOR) set .@mat,985;
-		else if (.@lvl==1) set .@mat,1010;
-		else if (.@lvl==2) set .@mat,1011;
-		else set .@mat,984;
-		if (countitem(.@mat)<1){ dispbottom "[FALTA] "+getitemname(.@mat); return 0; }
-		delitem .@mat,1;
-		.@cur=getequiprefinerycnt(.@s);
-		.@rate=callsub(RateCalc,.@t,.@lvl,.@cur);
-		if (rand(100)<.@rate){
+	.@typ  = getiteminfo(.@id, ITEMINFO_TYPE);
+	.@lvl  = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+
+	while (getequiprefinerycnt(.@s) < .@goal){
+
+		if (.@typ == IT_ARMOR)       set .@mat, 985;   // Elunium
+		else if (.@lvl == 1)         set .@mat, 1010;  // Phracon
+		else if (.@lvl == 2)         set .@mat, 1011;  // Emveretarcon
+		else                         set .@mat, 984;   // Oridecon
+
+		if (countitem(.@mat) < 1){
+			dispbottom "[FALTA] "+getitemname(.@mat);
+			return 0;
+		}
+		delitem .@mat, 1;
+
+		.@cur = getequiprefinerycnt(.@s);
+		.@rate = callsub(RateCalc, .@typ, .@lvl, .@cur);
+
+		if (rand(100) < .@rate){
 			successrefitem .@s;
 			dispbottom "[ÉXITO] "+getitemname(.@id)+" -> +"+(.@cur+1);
 		}else{
 			failedrefitem .@s;
-			dispbottom "[FALLO] "+getitemname(.@id)+" roto.";
-			return 1;
+			dispbottom "[ROTO] "+getitemname(.@id);
+			return 1; // roto, pero el proceso general continuará
 		}
 	}
 	return 2;
 
-//------------------------------------------------------------------
-// RateCalc  (devuelve porcentaje)
-//------------------------------------------------------------------
+//--------------------------------------------------------------
+// RateCalc – devuelve porcentaje según tu tabla
+//--------------------------------------------------------------
 RateCalc:
-	.@typ=getarg(0); .@lvl=getarg(1); .@cur=getarg(2);
-	if (.@typ==IT_ARMOR){
-		switch(.@cur){ case 4:return 60; case 5:return 40; case 6:return 30;
-			case 7:return 20; case 8:return 10; case 9:return 5; default:return 100; }
+	.@typ = getarg(0); .@lvl = getarg(1); .@cur = getarg(2);
+
+	if (.@typ == IT_ARMOR){
+		switch (.@cur){
+			case 4: return 60; case 5: return 40; case 6: return 30;
+			case 7: return 20; case 8: return 10; case 9: return 5;
+			default: return 100;
+		}
 	}
-	switch(.@cur){
-		case 4:return (.@lvl==4)?50:100;
-		case 5:return (.@lvl==4)?40:(.@lvl==3?50:100);
-		case 6: if (.@lvl==1) return 100; if (.@lvl==2) return 60; return 30;
-		case 7: if (.@lvl==1) return 60; if (.@lvl==2) return 40; if (.@lvl==3) return 20; return 15;
-		case 8: if (.@lvl==1) return 40; if (.@lvl==2) return 20; if (.@lvl==3) return 15; return 10;
-		case 9: if (.@lvl<=2) return 20; if (.@lvl==3) return 10; return 5;
-		default:return 100;
+
+	switch (.@cur){
+		case 4: return (.@lvl == 4) ? 50 : 100;
+		case 5: return (.@lvl == 4) ? 40 : ((.@lvl == 3) ? 50 : 100);
+		case 6: if (.@lvl == 1) return 100; if (.@lvl == 2) return 60; return 30;
+		case 7:
+			if (.@lvl == 1) return 60;
+			if (.@lvl == 2) return 40;
+			if (.@lvl == 3) return 20;
+			return 15; // lvl 4
+		case 8:
+			if (.@lvl == 1) return 40;
+			if (.@lvl == 2) return 20;
+			if (.@lvl == 3) return 15;
+			return 10; // lvl 4
+		case 9:
+			if (.@lvl <= 2) return 20;
+			if (.@lvl == 3)  return 10;
+			return 5; // lvl 4
+		default: return 100;
 	}
-} // FIN
+} // FIN NPC
