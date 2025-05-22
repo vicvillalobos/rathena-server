@@ -55,64 +55,75 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	// 5) Refinar copias si se eligió “todos” (modo 2)
 	//----------------------------------------------------------
 	if (.@mode == 2) {
-		// Debug inicio
-		dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
-
 		.@procesadas = 0;
-		// Repetir mientras queden ítems en inventario o equipados
-		while (countitem(.@idSel) > 0) {
-			dispbottom "[DBG] countitem(" + .@idSel + ")=" + countitem(.@idSel);
+		dispbottom "[DBG] Arrancando batch – itemID=" + .@idSel + " goal=+" + .@goal;
 
-			// 1) Desequipar lo que haya en slotSel
-			dispbottom "[DBG] Pre-unequip slotSel=" + .@slotSel + " equipedID=" + getequipid(.@slotSel);
-			if (getequipid(.@slotSel)) {
+		while (countitem(.@idSel) > 0) {
+			// 1) Desequipar slot actual si hace falta
+			if (getequipid(.@slotSel) > 0) {
+				dispbottom "[DBG] Desequipando slotSel=" + .@slotSel + " (ID=" + getequipid(.@slotSel) + ")";
 				unequip .@slotSel;
-				sleep2 200;  // 200 ms para que el servidor procese
-				dispbottom "[DBG] Post-unequip equipedID=" + getequipid(.@slotSel);
+				sleep2 200;
 			}
 
-			// 2) Listar inventario
+			// 2) Obtengo la lista completa de inventario
 			getinventorylist;
-			dispbottom "[DBG] inventorylist_count=" + @inventorylist_count;
+			dispbottom "[DBG] inventorylist_count=" + @inventorylist_count;  // :contentReference[oaicite:0]{index=0}
+
+			// 3) Recorro cada entrada y muestro datos
 			.@found = 0;
-
-			// 3) Buscar y equipar la primera copia disponible
 			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
-				dispbottom "[DBG] slot[" + .@i + "] id=" + @inventorylist_id[.@i] + " idx=" + @inventorylist_idx[.@i];
-				if (@inventorylist_id[.@i] != .@idSel) continue;
+				.@currId     = @inventorylist_id[.@i];
+				.@currInvIdx = @inventorylist_idx[.@i];
+				dispbottom "[DBG] inv[" + .@i + "] → idx:" + .@currInvIdx +
+						" ID:" + .@currId +
+						" Name:" + getitemname(.@currId);
 
-				.@invIdx = @inventorylist_idx[.@i];
-				dispbottom "[DBG] Trying equip invIdx=" + .@invIdx;
-				equip .@invIdx;
+				// Muestro cuántos slots tiene (0 = no equipable)
+				.@slots = getitemslots(.@currId);
+				dispbottom "[DBG]   getitemslots=" + .@slots;           // :contentReference[oaicite:1]{index=1}
+
+				// Muestro en qué equip-loc podría ir
+				.@locs = getiteminfo(.@currId, ITEMINFO_LOCATIONS);
+				dispbottom "[DBG]   getiteminfo(LOC)=" + .@locs;        // :contentReference[oaicite:2]{index=2}
+
+				if (.@currId != .@idSel) {
+					dispbottom "[DBG]   → no es target, salto";
+					continue;
+				}
+
+				// 4) Intento equipar la copia de interés
+				dispbottom "[DBG] Intentando equipar idx=" + .@currInvIdx;
+				equip .@currInvIdx;
 				sleep2 200;
-				dispbottom "[DBG] After equip, slotSel has=" + getequipid(.@slotSel);
+				dispbottom "[DBG]   tras equip: getequipid(slotSel)=" + getequipid(.@slotSel);
 
 				if (getequipid(.@slotSel) == .@idSel) {
-					dispbottom "[DBG] Equip OK at invIdx=" + .@invIdx;
+					dispbottom "[DBG]   ¡Equip OK!";
 					.@found = 1;
 					break;
 				} else {
-					dispbottom "[DBG] Equip FAILED at invIdx=" + .@invIdx;
+					dispbottom "[Error] Equip failed en idx=" + .@currInvIdx;
 				}
 			}
 
-			// 4) Si no encontramos copia, salimos
+			// 5) Si no encontramos ninguna copia equipable, salimos
 			if (!.@found) {
-				dispbottom "[DBG] No equipable copy found → exiting batch";
+				dispbottom "[DBG] No quedan copias equipables → saliendo del batch";
 				break;
 			}
 
-			// 5) Refinar la copia ya equipada
-			dispbottom "[DBG] Calling RefinaUno on slotSel=" + .@slotSel;
+			// 6) Refinamos la copia ya equipada
+			dispbottom "[DBG] Llamando RefinaUno(slotSel=" + .@slotSel + ", goal=+" + .@goal + ")";
 			callsub(RefinaUno, .@slotSel, .@goal);
-			dispbottom "[DBG] Returned from RefinaUno";
+			dispbottom "[DBG] Retornó de RefinaUno";
 
-			.@procesadas += 1;
-			dispbottom "[DBG] Copies processed so far=" + .@procesadas;
+			.@procesadas++;
+			dispbottom "[DBG] Copias procesadas hasta ahora=" + .@procesadas;
 		}
 
-		// Fin de batch
-		dispbottom "[DBG] Batch finished – total processed=" + .@procesadas;
+		// 7) Fin de batch
+		dispbottom "[DBG] Batch finalizado – total procesadas=" + .@procesadas;
 	}
 
 
