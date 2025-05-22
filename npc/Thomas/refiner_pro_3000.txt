@@ -36,6 +36,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 		setarray .@equipped_slot[.@count], .@slot;
 		setarray .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@ref + "]";
 		setarray .@equipped_ref[.@count], .@ref;
+		setarray .@equipped_id[.@count], .@id;
 		.@count++;
 	}
 
@@ -45,7 +46,6 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	}
 
 	next;
-	// Construir menú
 	set .@menu$, "";
 	for (.@j = 0; .@j < .@count; .@j++) {
 		.@menu$ += .@equipped_name$[.@j];
@@ -54,16 +54,36 @@ prontera,154,180,5	script	Refinador PRO	416,{
 
 	set .@choice, select(.@menu$) - 1;
 
-	// Mostrar refine actual y pedir input
+	// Variables del ítem seleccionado
 	set .@slot_sel, .@equipped_slot[.@choice];
 	set .@ref_current, .@equipped_ref[.@choice];
-	set .@id_sel, getequipid(.@slot_sel);
+	set .@id_sel, .@equipped_id[.@choice];
 
 	mes "Seleccionaste: ^0000FF" + getitemname(.@id_sel) + "^000000";
 	mes "Refinamiento actual: +" + .@ref_current;
 	mes "¿Hasta qué nivel deseas refinarlo?";
 	input .@ref_target, .@ref_current + 1, 10;
 
-	mes "Perfecto. Refinarás hasta +" + .@ref_target + ".";
+	// Contar cuántos iguales tienes en inventario
+	set .@inventory_count, countitem(.@id_sel);
+
+	if (.@inventory_count > 0) {
+		mes "Tienes " + .@inventory_count + " adicionales de este ítem en tu inventario.";
+		mes "¿Quieres refinar solo el equipado o todos los que tienes?";
+		next;
+		set .@modo, select("Solo el equipado:Todos los del inventario");
+
+		if (.@modo == 1) {
+			mes "Has elegido refinar solo el equipado.";
+			// Aquí iría el proceso de refine individual
+		} else {
+			mes "Refinarás todos los " + (.@inventory_count + 1) + " ítems (" + getitemname(.@id_sel) + ").";
+			// Aquí irá el loop para recorrer inventario + equipado
+		}
+	} else {
+		mes "No tienes copias adicionales en el inventario.";
+		mes "Refinando solo el equipado.";
+	}
+
 	close;
 }
