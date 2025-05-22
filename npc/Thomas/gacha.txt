@@ -1,8 +1,7 @@
-prontera,164,172,4	script	MvP Machine	562,{
+prontera,164,172,4	script	Nameless Gacha	562,{
 
 //============== NPC CONF ===================
-set .@item,501;	// Item needed ID.
-set .@itemcant,1;	// Items needed cant.
+set .@cashcant,1000;	// Items needed cant.
 set .@premiocant,1;	// PRIZE CANT
 setarray .@randomitem[0],	5053,1552,2615,1230,1232,1233,1234,1265,2319,1175,2621,5123,2700,5160,2256,1466,1476,1565,2000,2423,2702,1377
 				,1422,1471,1615,2004,2334,1237,2507,5162,5093,1417,2648,2649,5002,1162,1168,1411,2258,2317,1473,1557,1722,1125
@@ -17,25 +16,26 @@ set .@maxitems,getarraysize(.@randomitem);
 
 
 //=============== SCRIPT =====================
-	mes "^0000FFMvP^000000 ^0000FFMachine^000000";
-	mes "Hola! Soy la MvP Machine";
+	mes "^0000FFNameless^000000 ^0000FFGacha^000000";
+	mes "Hola! Soy el Nameless Gacha";
+    mes "Mis servicios cuestan ^FF0000$1,000 Cash points^000000";
 	mes "Que deseas hacer?";
 	next;
 	switch(select("Cambia mi coin:Que es esto?:Nada, gracias."))	{
 
 case 1:
-	if(countitem(.@item) >= .@itemcant)			{
-			mes "^0000FFMvP^000000 ^0000FFMachine^000000";;
+	if(#CASHPOINTS >= .@cashcant)			{
+			mes "^0000FFNameless^000000 ^0000FFGacha^000000";;
 			mes "Aquí tienes!";
 			next;
-			delitem .@item, .@itemcant;
+			set #CASHPOINTS , #CASHPOINTS - .@cashcant;
 			getitem( .@randomitem[rand(.@maxitems)], .@premiocant);
 			close;	
 
 		}
 	else 	
 		{
-	mes "^0000FFMvP^000000 ^0000FFMachine^000000";;
+	mes "^0000FFNameless^000000 ^0000FFGacha^000000";;
 	mes "Lo siento, no tienes lo necesario...";
 	mes "Vuelve pronto!";
 	close;
@@ -43,21 +43,21 @@ case 1:
 
 
 case 2:
-	mes "^0000FFMvP^000000 ^0000FFMachine^000000";;
-	mes "Soy la MvP Machine, si me traes una ^FF0000MvP Coin^000000";
-	mes "Puedo cambiartela por algo que llevo dentro";
-	mes "^FF0000Puedes obtener CUALQUIER DROP MVP al azár";
+	mes "^0000FFNameless^000000 ^0000FFGacha^000000";;
+	mes "Soy el Nameless Gacha, si me traes ^FF0000$1,000 Cash points^000000";
+	mes "Puedo cambiartelos por algo que llevo dentro";
+	mes "^FF0000Puedes obtener MUCHAS COSITAS";
 	next;
-	switch(select("Como consigo la MvP Coin?:Gracias!"))	{
+	switch(select("Como consigo el cash?:Gracias!"))	{
 
 case 1:
-	mes "Las MvP Coins las puedes conseguir a un ^FF00005%^000000";
+	mes "Los cash points los consigues matando MvP, Jugando BG o a través de donaciones!";
 	mes "En cualquier MvP"; 
 	close;
 
 
 case 2:
-	mes "^0000FFMvP^000000 ^0000FFMachine^000000";
+	mes "^0000FFNameless^000000 ^0000FFGacha^000000";
 	mes "Adios!";
 	close;
 
@@ -68,7 +68,7 @@ case 2:
 
 
 case 3:
-	mes "^0000FFMvP^000000 ^0000FFMachine^000000";
+	mes "^0000FFNameless^000000 ^0000FFGacha^000000";
 	mes "Bye!";
 	close;
 
