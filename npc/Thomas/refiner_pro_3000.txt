@@ -34,6 +34,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	mes	"¿A qué nivel de refine quieres llegar?";
 	input	.@goal,	.@curRef+1,	10;
 	if (.@goal <= .@curRef) { mes "Debe ser mayor al refine actual."; close; }
+	if (.@goal > 10) { mes "Sólo puedes refinar hasta +10..."; close; }
 
 	//----------------------------------------------------------
 	// 3) ¿Sólo equipado o todas las copias?
