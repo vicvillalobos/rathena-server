@@ -64,25 +64,26 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	mes "¿Hasta qué nivel deseas refinarlo?";
 	input .@ref_target, .@ref_current + 1, 10;
 
-	// Contar cuántos iguales tienes en inventario
+	// Verificar cuántos hay en inventario SIN contar el equipado
 	set .@inventory_count, countitem(.@id_sel);
 
-	if (.@inventory_count > 0) {
+	if (.@inventory_count >= 1) {
 		mes "Tienes " + .@inventory_count + " adicionales de este ítem en tu inventario.";
 		mes "¿Quieres refinar solo el equipado o todos los que tienes?";
 		next;
 		set .@modo, select("Solo el equipado:Todos los del inventario");
 
 		if (.@modo == 1) {
-			mes "Has elegido refinar solo el equipado.";
-			// Aquí iría el proceso de refine individual
+			mes "Elegiste refinar solo el equipado.";
+			// lógica refine 1
 		} else {
-			mes "Refinarás todos los " + (.@inventory_count + 1) + " ítems (" + getitemname(.@id_sel) + ").";
-			// Aquí irá el loop para recorrer inventario + equipado
+			mes "Refinarás los " + (.@inventory_count + 1) + " ítems (" + getitemname(.@id_sel) + ").";
+			// lógica refine todos
 		}
 	} else {
-		mes "No tienes copias adicionales en el inventario.";
+		mes "No tienes copias adicionales de este ítem.";
 		mes "Refinando solo el equipado.";
+		// lógica refine 1
 	}
 
 	close;
