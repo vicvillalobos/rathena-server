@@ -55,35 +55,42 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	//   Modo 2 – Refino en batch con límite fijo
 	//----------------------------------------------------------
 	if (.@mode == 2) {
-		// 1) Contamos cuántas copias hay
 		.@total      = countitem(.@idSel);
 		.@procesadas = 0;
-		dispbottom "[DBG] Batch start – itemID=" + .@idSel + 
-				" goal=+" + .@goal + 
+		dispbottom "[DBG] Batch iniciado – itemID=" + .@idSel +
+				" goal=+" + .@goal +
 				" | copias=" + .@total;
 
 		enable_items;  // permitir equip dentro del NPC :contentReference[oaicite:0]{index=0}
 
-		// 2) Procesar cada copia exactamente una vez
 		for (.@i = 0; .@i < .@total; .@i++) {
 			dispbottom "[DBG] Iteración " + (.@i+1) + "/" + .@total;
 
-			// 2.1) Equipar la “primera” copia disponible por ID
+			// Equipar la primera copia disponible por ID
 			dispbottom "[DBG] Equipando itemID=" + .@idSel;
 			equip .@idSel;  
 			sleep2 200;
 			if (getequipid(.@slotSel) != .@idSel) {
-				dispbottom "[Error] No se pudo equipar itemID=" + .@idSel;
+				dispbottom "[Error] No pudo equipar itemID=" + .@idSel;
 				continue;
 			}
 			dispbottom "[DBG] Equip OK";
 
-			// 2.2) Refinar (o detectar +10 y salir inmediatamente)
+			// Refinar hasta +goal
 			dispbottom "[DBG] Refinando +"+ .@goal;
 			callsub(RefinaUno, .@slotSel, .@goal);
 			dispbottom "[DBG] Retornó de RefinaUno";
 
-			// 2.3) Desequipar para “rotar” esta copia al final de inventario
+			// Chequeo de refine actual
+			.@currRef = getequiprefinerycnt(.@slotSel);
+			dispbottom "[DBG] Refin actual=" + .@currRef;
+			if (.@currRef >= .@goal) {
+				dispbottom "[DBG] ¡Alcanzado +"+ .@goal +"! Finalizando batch.";
+				// opcional: unequip .@slotSel; sleep2 200;
+				break;
+			}
+
+			// Rotar esta copia al final del inventario
 			dispbottom "[DBG] Rotando – desequipando para mover al final";
 			unequip .@slotSel;
 			sleep2 200;
@@ -92,7 +99,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
 		}
 
 		disable_items;
-		dispbottom "[DBG] Batch finished – procesadas=" + .@procesadas + 
+		dispbottom "[DBG] Batch finalizado – procesadas=" + .@procesadas +
 				" de " + .@total;
 	}
 
