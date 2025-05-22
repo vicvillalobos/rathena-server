@@ -80,9 +80,14 @@ prontera,156,180,5	script	Refinador Batch	416,{
 				break;
 			}
 
-			// 4) Rotamos la copia refinada al final
-			unequip .@slotSel;
-			sleep2 600;
+			// 4) Rotamos la copia refinada al final (solo si está equipada)
+			if (getequipid(.@slotSel) > 0) {
+				dispbottom "[DBG] Desequipando slotSel=" + .@slotSel;
+				unequip .@slotSel;
+				sleep2 600;
+			} else {
+				dispbottom "[DBG] No hay ítem en slotSel=" + .@slotSel + ", salto unequip";
+			}
 
 			.@procesadas++;
 		}
