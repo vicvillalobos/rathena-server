@@ -1,14 +1,15 @@
 // ===================================================================
 // NPC  : Refinador PRO
-// Mapa : prontera (154,180) – sprite 416 (4_M_REPAIRMAN)
+// Mapa : prontera (154,180)
+// Sprite: 416 (4_M_REPAIRMAN)
 // ===================================================================
 prontera,154,180,5	script	Refinador PRO	416,{
 
 	//---------------------------------------------------------------
-	// 1) LISTAR ÍTEMS EQUIPADOS REFINABLES
+	// 1) ÍTEMS REFINABLES EQUIPADOS (armor, weapon, shield, shoes, garment)
 	//---------------------------------------------------------------
 	mes "[Refinador]";
-	mes "Estos son tus ítems refinables equipados:";
+	mes "Estos son los ítems refinables equipados:";
 
 	setarray .@slots[0], EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_SHOES, EQI_GARMENT;
 	set .@cnt, 0;
@@ -17,7 +18,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 		.@slot = .@slots[.@i];
 		.@id   = getequipid(.@slot);
 		.@rfn  = getequiprefinerycnt(.@slot);
-		if (.@id <= 0 || .@rfn == -1) continue;
+		if (.@id <= 0 || .@rfn == -1) continue;          // vacío o no refinable
 
 		setarray .@slot_eq[.@cnt],  .@slot;
 		setarray .@id_eq[.@cnt],    .@id;
@@ -26,7 +27,7 @@ prontera,154,180,5	script	Refinador PRO	416,{
 		.@cnt++;
 	}
 
-	if (.@cnt == 0) { mes "No tienes nada refinable."; close; }
+	if (.@cnt == 0) { mes "No hay nada refinable."; close; }
 
 	//---------------------------------------------------------------
 	// 2) MENÚ DE SELECCIÓN
@@ -43,39 +44,43 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	set .@rfn_now,  .@rfn_eq[.@pick];
 
 	//---------------------------------------------------------------
-	// 3) NIVEL FINAL DE REFINADO
+	// 3) NIVEL FINAL
 	//---------------------------------------------------------------
-	mes "Seleccionaste: ^0000FF"+getitemname(.@id_sel)+"^000000  (+"+.@rfn_now+")";
-	mes "¿Hasta qué refine quieres llegar?";
+	mes "Seleccionaste:^0000FF "+getitemname(.@id_sel)+"^000000  (+"+.@rfn_now+")";
+	mes "¿Hasta qué refine deseas llegar?";
 	input .@rfn_goal, .@rfn_now+1, 10;
 
 	//---------------------------------------------------------------
-	// 4) ¿HAY COPIAS ADICIONALES?
+	// 4) COPIAS ADICIONALES (inventario)
 	//---------------------------------------------------------------
-	set .@inv_copies, countitem(.@id_sel) - 1; // -1 para excluir el equipado
+	set .@inv_copies, countitem(.@id_sel) - 1; // -1 excluye el equipado
 	if (.@inv_copies < 0) set .@inv_copies, 0;
 
 	if (.@inv_copies >= 1) {
-		mes "Tienes "+.@inv_copies+" copias adicionales en inventario.";
+		mes "Tienes "+.@inv_copies+" copias en el inventario.";
 		mes "¿Refinar solo el equipado o todos?";
 		next;
 		set .@mode, select("Solo el equipado:Todos (equipo + inventario)");
 	} else {
-		set .@mode, 1; // solo uno
+		set .@mode, 1;
 	}
 
 	//---------------------------------------------------------------
 	// 5) REFINAR ÍTEM EQUIPADO
 	//---------------------------------------------------------------
-	callsub RefinaOne, .@slot_sel, .@rfn_goal;
+	switch (callsub(RefinaOne, .@slot_sel, .@rfn_goal)) {
+		case 0: mes "Proceso detenido: falta mineral."; break;
+		case 1: mes "Proceso detenido: el ítem se destruyó."; break;
+		case 2: mes "Ítem equipado alcanzó +"+.@rfn_goal+"."; break;
+	}
 
 	//---------------------------------------------------------------
-	// 6) REFINAR COPIAS ADICIONALES (si eligió “todos”)
+	// 6) REFINAR COPIAS ADICIONALES
 	//---------------------------------------------------------------
 	if (.@mode == 2 && .@inv_copies > 0) {
 
 		getinventorylist;
-		set .@done, 0;
+		set .@proc, 0;
 
 		for (.@k = 0; .@k < @inventorylist_count; .@k++) {
 			if (@inventorylist_id[.@k] != .@id_sel) continue;
@@ -85,32 +90,38 @@ prontera,154,180,5	script	Refinador PRO	416,{
 			equip   .@idx;
 			if (getequipid(.@slot_sel) != .@id_sel) continue;
 
-			callsub RefinaOne, .@slot_sel, .@rfn_goal;
+			switch (callsub(RefinaOne, .@slot_sel, .@rfn_goal)) {
+				case 0: mes "Detenido (sin mineral) al procesar una copia."; break;
+				case 1: /* ítem roto, continuar */; break;
+				case 2: /* completado OK */; break;
+			}
 			unequip .@slot_sel;
-			.@done++;
+			.@proc++;
 		}
-		mes "Procesadas "+.@done+" copias adicionales.";
+		mes .@proc+" copias procesadas.";
 	}
 
-	mes "Refinamiento completado.";
+	mes "Operación terminada.";
 	close;
 
-// ------------------------------------------------------------------
-// SUB: REFINAR EL ÍTEM QUE ESTÁ EQUIPADO EN 'slot' HASTA 'goal'
-// ------------------------------------------------------------------
+// ===================================================================
+// RefinaOne: intenta llevar el ítem EQUIPADO en 'slot' hasta 'goal'.
+// Devuelve:
+//   0 = falta mineral   | 1 = ítem destruido   | 2 = completado
+// ===================================================================
 RefinaOne:
 	.@slot = getarg(0);
 	.@goal = getarg(1);
 
 	.@id   = getequipid(.@slot);
-	if (.@id == 0) return;
+	if (.@id == 0) { return 1; }
 
 	.@type = getiteminfo(.@id, ITEMINFO_TYPE);
 	.@lvl  = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
 
 	while (getequiprefinerycnt(.@slot) < .@goal) {
 
-		// Mineral
+		// Mineral requerido
 		if (.@type == IT_ARMOR)
 			set .@mat, 985; // Elunium
 		else {
@@ -119,14 +130,11 @@ RefinaOne:
 			else                 set .@mat, 984;  // Oridecon
 		}
 
-		if (countitem(.@mat) < 1) {
-			dispbottom "[FALTA] "+getitemname(.@mat);
-			return;
-		}
+		if (countitem(.@mat) < 1) { dispbottom "[FALTA] "+getitemname(.@mat); return 0; }
 		delitem .@mat, 1;
 
 		.@cur = getequiprefinerycnt(.@slot);
-		callsub RateCalc, .@type, .@lvl, .@cur; // devuelve .@rate
+		callsub RateCalc, .@type, .@lvl, .@cur; // salida en .@rate
 
 		if (rand(100) < .@rate) {
 			successrefitem .@slot;
@@ -134,28 +142,28 @@ RefinaOne:
 		} else {
 			failedrefitem .@slot;
 			dispbottom "[FALLO] "+getitemname(.@id)+" se destruyó.";
-			return;
+			return 1;
 		}
 	}
-	return;
+	return 2;
 
-// ------------------------------------------------------------------
-// RateCalc: calcula la probabilidad y la deja en .@rate
-// ------------------------------------------------------------------
+// ===================================================================
+// RateCalc: pone en .@rate la probabilidad según la tabla
+// ===================================================================
 RateCalc:
 	.@typ = getarg(0);
 	.@lvl = getarg(1);
 	.@cur = getarg(2);
 
-	// Armaduras
+	// Armadura
 	if (.@typ == IT_ARMOR) {
 		switch (.@cur) {
-			case 4: set .@rate, 60;  end;
-			case 5: set .@rate, 40;  end;
-			case 6: set .@rate, 30;  end;
-			case 7: set .@rate, 20;  end;
-			case 8: set .@rate, 10;  end;
-			case 9: set .@rate,  5;  end;
+			case 4: set .@rate, 60; end;
+			case 5: set .@rate, 40; end;
+			case 6: set .@rate, 30; end;
+			case 7: set .@rate, 20; end;
+			case 8: set .@rate, 10; end;
+			case 9: set .@rate,  5; end;
 			default: set .@rate, 100; end;
 		}
 	}
@@ -184,4 +192,4 @@ RateCalc:
 			set .@rate, 5;  end;  // lvl 4
 		default: set .@rate, 100; end;
 	}
-} // <-- fin del NPC
+} // FIN NPC
