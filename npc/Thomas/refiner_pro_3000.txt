@@ -142,7 +142,7 @@ RefinaOne:
 // ===================================================================
 // FUNCIÓN DE RATES
 // ===================================================================
-function   script  RateTable    {
+-	script	RateTable	-1,{
 	.@typ = getarg(0);
 	.@lvl = getarg(1);
 	.@cur = getarg(2);
