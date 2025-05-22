@@ -17,7 +17,7 @@ prontera,152,180,4	script	DebugRefinable	415,{
 	close;
 }
 
-prontera,150,180,5	script	Refinador PRO	416,{
+prontera,154,180,5	script	Refinador PRO	416,{
 
 	mes "[Refinador PRO]";
 	mes "Voy a ayudarte a refinar tu equipo.";
