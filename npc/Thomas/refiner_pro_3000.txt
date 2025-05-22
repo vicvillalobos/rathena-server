@@ -38,11 +38,6 @@ prontera,156,180,5	script	Refinador Batch	416,{
         mes "Operación cancelada por usuario.";
         close;
     }
-    //  — Sólo permitimos 1…10 —
-    if (.@goal < 1 || .@goal > 10) {
-        mes "El nivel debe estar entre +1 y +10.";
-        close;
-    }
     //  — Debe ser mayor que el refine actual —
     if (.@goal <= .@curRef) {
         mes "Debe ser mayor al refine actual (+"+.@curRef +").";
@@ -78,7 +73,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
 
 			// 1) Equipamos la siguiente copia por ID
 			equip .@idSel;  // equipa siempre la primera instancia :contentReference[oaicite:0]{index=0}
-			sleep2 200;
+			sleep2 1000;
 			if (getequipid(.@slotSel) != .@idSel) {
 				dispbottom "[Error] falló equipar ID="+.@idSel;
 				continue;
