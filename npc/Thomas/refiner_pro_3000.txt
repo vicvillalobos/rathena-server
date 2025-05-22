@@ -22,6 +22,7 @@ prontera,155,180,4	script	Refinador PRO	416,{
 	mes "[Refinador PRO]";
 	mes "Estos son los ítems refinables que tienes equipados:";
 
+	// Sólo slots físicos clásicos que pediste
 	setarray .@equip_slots[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES;
 
 	set .@count, 0;
@@ -30,11 +31,11 @@ prontera,155,180,4	script	Refinador PRO	416,{
 		set .@id, getequipid(.@slot);
 		if (.@id <= 0) continue;
 
-		set .@type, getiteminfo(.@id, ITEMINFO_TYPE);
-		if (.@type != IT_ARMOR && .@type != IT_WEAPON) continue;
+		// NUEVO: eliminar filtro por tipo
+		// Solo verifica que tenga refine > -1
+		if (getequiprefinerycnt(.@slot) == -1) continue;
 
 		set .@refine, getequiprefinerycnt(.@slot);
-
 		setarray .@slots[.@count], .@slot;
 		setarray .@ids[.@count], .@id;
 		setarray .@names$[.@count], getitemname(.@id) + " [+" + .@refine + "]";
@@ -42,7 +43,7 @@ prontera,155,180,4	script	Refinador PRO	416,{
 	}
 
 	if (.@count == 0) {
-		mes "No tienes ítems refinables equipados en posiciones válidas.";
+		mes "No tienes ítems refinables equipados.";
 		close;
 	}
 
@@ -73,33 +74,32 @@ prontera,155,180,4	script	Refinador PRO	416,{
 	close;
 
 // ------------------------------
-// SUB: Refiar por slot
+// SUB: Refinar un slot
 // ------------------------------
 L_Refina:
 	.@slot = getarg(0);
 	.@target = getarg(1);
 	.@id = getequipid(.@slot);
-	.@type = getiteminfo(.@id, ITEMINFO_TYPE);
 	.@ref = getequiprefinerycnt(.@slot);
-	.@mat_id = 0;
+
+	// Material: Elunium si es armadura, Oridecon si es arma. Default = Elunium
+	.@type = getiteminfo(.@id, ITEMINFO_TYPE);
+	if (.@type == IT_ARMOR)
+		set .@mat_id, 985; // Elunium
+	else
+		set .@mat_id, 984; // Oridecon
 
 	while (.@ref < .@target) {
-		// Material por tipo
-		if (.@type == IT_ARMOR)
-			.@mat_id = 985; // Elunium
-		else
-			.@mat_id = 984; // Oridecon
-
 		if (countitem(.@mat_id) < 1) {
 			dispbottom "Falta material: " + getitemname(.@mat_id);
 			return;
 		}
 		delitem .@mat_id, 1;
 
-		.@rate = callfunc("RefineRateFromTable", .@type, .@ref);
+		set .@rate, callfunc("RefineRateFromTable", .@type, .@ref);
 		if (rand(100) < .@rate) {
 			successrefitem .@slot;
-			set .@ref, .@ref + 1;
+			.@ref++;
 			dispbottom getitemname(.@id) + " refinado con éxito a +" + .@ref;
 		} else {
 			failedrefitem(.@slot);
@@ -111,7 +111,7 @@ L_Refina:
 }
 
 // ------------------------------
-// Función de rate basada en tabla
+// Rates de refine reales
 // ------------------------------
 function	script	RefineRateFromTable	{
 	.@type = getarg(0);
