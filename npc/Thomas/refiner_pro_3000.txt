@@ -17,7 +17,7 @@ prontera,152,180,4	script	DebugRefinable	415,{
 	close;
 }
 
-prontera,155,180,4	script	Refinador PRO	4_M_REPAIRMAN,{
+prontera,155,180,4	script	Refinador PRO	416,{
 
 	mes "[Refinador PRO]";
 	mes "Estos son los ítems refinables que tienes equipados:";
