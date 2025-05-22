@@ -4,10 +4,7 @@
 // Mapa  : prontera (154,180)  Sprite 416 (4_M_REPAIRMAN)
 // ===============================================================
 prontera,154,180,5	script	Refinador PRO	416,{
-	disable_items;
-	.@npc_name$ = getarg(0);
-	.@features = getarg(1);
-	mes "["+ .@npc_name$ +"]";
+	mes "[Refiner PRO]";
 	mes "I'm the Armsmith.";
 	mes "I can refine all kinds of weapons, armor and equipment, so let me";
 	mes "know what you want me to refine.";
