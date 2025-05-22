@@ -82,7 +82,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
 
 			// 4) Rotamos la copia refinada al final
 			unequip .@slotSel;
-			sleep2 200;
+			sleep2 600;
 
 			.@procesadas++;
 		}
