@@ -134,7 +134,7 @@ RefinaOne:
 		delitem .@mat, 1;
 
 		.@cur = getequiprefinerycnt(.@slot);
-		callsub RateCalc, .@type, .@lvl, .@cur; // salida en .@rate
+		.@rate = callsub( RateCalc, .@type, .@lvl, .@cur );
 
 		if (rand(100) < .@rate) {
 			successrefitem .@slot;
@@ -148,48 +148,48 @@ RefinaOne:
 	return 2;
 
 // ===================================================================
-// RateCalc: pone en .@rate la probabilidad según la tabla
+// RateCalc – devuelve un entero: la probabilidad según la tabla
 // ===================================================================
 RateCalc:
 	.@typ = getarg(0);
 	.@lvl = getarg(1);
 	.@cur = getarg(2);
 
-	// Armadura
+	// Armaduras
 	if (.@typ == IT_ARMOR) {
 		switch (.@cur) {
-			case 4: set .@rate, 60; end;
-			case 5: set .@rate, 40; end;
-			case 6: set .@rate, 30; end;
-			case 7: set .@rate, 20; end;
-			case 8: set .@rate, 10; end;
-			case 9: set .@rate,  5; end;
-			default: set .@rate, 100; end;
+			case 4: return 60;
+			case 5: return 40;
+			case 6: return 30;
+			case 7: return 20;
+			case 8: return 10;
+			case 9: return  5;
+			default: return 100;
 		}
 	}
 
 	// Armas
 	switch (.@cur) {
-		case 4: set .@rate, (.@lvl == 4)? 50 : 100; end;
-		case 5: set .@rate, (.@lvl == 4)? 40 : ((.@lvl == 3)? 50 : 100); end;
+		case 4: return (.@lvl == 4) ? 50 : 100;
+		case 5: return (.@lvl == 4) ? 40 : ((.@lvl == 3) ? 50 : 100);
 		case 6:
-			if (.@lvl == 1) { set .@rate, 100; end; }
-			if (.@lvl == 2) { set .@rate,  60; end; }
-			set .@rate, 30; end; // lvl 3-4
+			if (.@lvl == 1) return 100;
+			if (.@lvl == 2) return  60;
+			return 30; // lvl 3-4
 		case 7:
-			if (.@lvl == 1) { set .@rate, 60; end; }
-			if (.@lvl == 2) { set .@rate, 40; end; }
-			if (.@lvl == 3) { set .@rate, 20; end; }
-			set .@rate, 15; end;  // lvl 4
+			if (.@lvl == 1) return 60;
+			if (.@lvl == 2) return 40;
+			if (.@lvl == 3) return 20;
+			return 15;	// lvl 4
 		case 8:
-			if (.@lvl == 1) { set .@rate, 40; end; }
-			if (.@lvl == 2) { set .@rate, 20; end; }
-			if (.@lvl == 3) { set .@rate, 15; end; }
-			set .@rate, 10; end;  // lvl 4
+			if (.@lvl == 1) return 40;
+			if (.@lvl == 2) return 20;
+			if (.@lvl == 3) return 15;
+			return 10;	// lvl 4
 		case 9:
-			if (.@lvl <= 2) { set .@rate, 20; end; }
-			if (.@lvl == 3) { set .@rate, 10; end; }
-			set .@rate, 5;  end;  // lvl 4
-		default: set .@rate, 100; end;
+			if (.@lvl <= 2) return 20;
+			if (.@lvl == 3)  return 10;
+			return 5;       // lvl 4
+		default: return 100;
 	}
 } // FIN NPC
