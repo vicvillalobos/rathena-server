@@ -52,80 +52,40 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	callsub(RefinaUno,	.@slotSel,	.@goal);
 
 	//----------------------------------------------------------
-	// 5) Refinar copias si se eligió “todos” (modo 2)
+	//   Modo 2 – Refino en batch usando el ID directamente
 	//----------------------------------------------------------
 	if (.@mode == 2) {
 		.@procesadas = 0;
-		dispbottom "[DBG] Arrancando batch – itemID=" + .@idSel + " goal=+" + .@goal;
+		dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
 
+		enable_items;  // Permitir equip dentro de NPC :contentReference[oaicite:1]{index=1}
+
+		// Mientras queden ítems de ese ID en el inventario
 		while (countitem(.@idSel) > 0) {
-			// 1) Desequipar slot actual si hace falta
-			if (getequipid(.@slotSel) > 0) {
-				dispbottom "[DBG] Desequipando slotSel=" + .@slotSel + " (ID=" + getequipid(.@slotSel) + ")";
-				unequip .@slotSel;
-				sleep2 200;
-			}
+			dispbottom "[DBG] countitem(" + .@idSel + ")=" + countitem(.@idSel);
 
-			// 2) Obtengo la lista completa de inventario
-			getinventorylist;
-			dispbottom "[DBG] inventorylist_count=" + @inventorylist_count;  // :contentReference[oaicite:0]{index=0}
+			// Intento equipar por ID, no por índice
+			dispbottom "[DBG] Equipando itemID=" + .@idSel;
+			equip .@idSel;
+			sleep2 200;  // Pequeña pausa para que el servidor procese el equip
 
-			// 3) Recorro cada entrada y muestro datos
-			.@found = 0;
-			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
-				.@currId     = @inventorylist_id[.@i];
-				.@currInvIdx = @inventorylist_idx[.@i];
-				dispbottom "[DBG] inv[" + .@i + "] → idx:" + .@currInvIdx +
-						" ID:" + .@currId +
-						" Name:" + getitemname(.@currId);
-
-				// Muestro cuántos slots tiene (0 = no equipable)
-				.@slots = getitemslots(.@currId);
-				dispbottom "[DBG]   getitemslots=" + .@slots;           // :contentReference[oaicite:1]{index=1}
-
-				// Muestro en qué equip-loc podría ir
-				.@locs = getiteminfo(.@currId, ITEMINFO_LOCATIONS);
-				dispbottom "[DBG]   getiteminfo(LOC)=" + .@locs;        // :contentReference[oaicite:2]{index=2}
-
-				if (.@currId != .@idSel) {
-					dispbottom "[DBG]   → no es target, salto";
-					continue;
-				}
-
-				// 4) Intento equipar la copia de interés
-				dispbottom "[DBG] Intentando equipar idx=" + .@currInvIdx;
-				equip .@currInvIdx;
-				sleep2 200;
-				dispbottom "[DBG]   tras equip: getequipid(slotSel)=" + getequipid(.@slotSel);
-
-				if (getequipid(.@slotSel) == .@idSel) {
-					dispbottom "[DBG]   ¡Equip OK!";
-					.@found = 1;
-					break;
-				} else {
-					dispbottom "[Error] Equip failed en idx=" + .@currInvIdx;
-				}
-			}
-
-			// 5) Si no encontramos ninguna copia equipable, salimos
-			if (!.@found) {
-				dispbottom "[DBG] No quedan copias equipables → saliendo del batch";
+			// Compruebo si el equip tuvo éxito
+			if (getequipid(.@slotSel) != .@idSel) {
+				dispbottom "[Error] No se pudo equipar itemID=" + .@idSel;
 				break;
 			}
+			dispbottom "[DBG] Equip OK, refinando +"+ .@goal;
 
-			// 6) Refinamos la copia ya equipada
-			dispbottom "[DBG] Llamando RefinaUno(slotSel=" + .@slotSel + ", goal=+" + .@goal + ")";
+			// Refinamos con tu subrutina
 			callsub(RefinaUno, .@slotSel, .@goal);
-			dispbottom "[DBG] Retornó de RefinaUno";
+			dispbottom "[DBG] Refinado terminado para itemID=" + .@idSel;
 
 			.@procesadas++;
-			dispbottom "[DBG] Copias procesadas hasta ahora=" + .@procesadas;
 		}
 
-		// 7) Fin de batch
-		dispbottom "[DBG] Batch finalizado – total procesadas=" + .@procesadas;
+		disable_items;
+		dispbottom "[DBG] Batch finished – total processed=" + .@procesadas;
 	}
-
 
 	mes	"[Refinador] Trabajo finalizado.";
 	close;
