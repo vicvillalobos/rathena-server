@@ -107,8 +107,18 @@ RefinaUno:
 	.@id	= getequipid(.@slot);
 	if (!.@id)	return;
 
-	.@tipo	= getiteminfo(.@id, ITEMINFO_TYPE);
-	.@lvlA	= getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+	.@tipo = getiteminfo(.@id, ITEMINFO_TYPE);
+	if (.@tipo == 5) {    // 5 → arma
+		.@lvlA = getiteminfo(.@id, ITEMINFO_WEAPONLEVEL);
+	}
+	else if (.@tipo == 4) { // 4 → armadura
+		.@lvlA = getiteminfo(.@id, ITEMINFO_ARMORLEVEL);
+	}
+	else {
+		.@lvlA = 4; // grupo por defecto
+	}
+	dispbottom	"[Item Level] "+.@lvlA;
+	dispbottom	"[Item Type] "+.@tipo;
 
 	while (getequiprefinerycnt(.@slot) < .@goal) {
 
@@ -125,8 +135,6 @@ RefinaUno:
 		.@randomnum = rand(100);
 
 		dispbottom	"[RATE] "+.@rate+" -> [RAND] "+.@randomnum;
-		dispbottom	"[Item Level] "+.@lvlA;
-		dispbottom	"[Item Type] "+.@tipo;
 		if (.@randomnum < .@rate) {
 			successrefitem	.@slot;
 			dispbottom	"[OK] "+getitemname(.@id)+" -> +"+(.@act+1);
