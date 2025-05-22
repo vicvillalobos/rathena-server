@@ -60,40 +60,38 @@ prontera,156,180,5	script	Refinador Batch	416,{
 		enable_items;
 
 		for (.@i = 0; .@i < .@total; .@i++) {
-			dispbottom "[DBG] Iteración "+(.@i+1)+"/"+.@total;
+			//dispbottom "[DBG] Iteración "+(.@i+1)+"/"+.@total;
 
 			// 1) Equipamos la siguiente copia por ID
 			equip .@idSel;  // equipa siempre la primera instancia :contentReference[oaicite:0]{index=0}
 			sleep2 200;
 			if (getequipid(.@slotSel) != .@idSel) {
-				dispbottom "[Error] falló equipar ID="+.@idSel;
+				//dispbottom "[Error] falló equipar ID="+.@idSel;
 				continue;
 			}
 
 			// 2) Refinamos y capturamos el plus final
 			.@lastRef = callsub(RefinaUno, .@slotSel, .@goal);
-			dispbottom "[DBG] +"+.@lastRef+" alcanzado en esta copia";
+			//dispbottom "[DBG] +"+.@lastRef+" alcanzado en esta copia";
 
 			// 3) Si llegamos al objetivo, rompemos y salimos
 			if (.@lastRef >= .@goal) {
-				dispbottom "[DBG] ¡Meta +"+.@goal+" alcanzada! Terminando batch.";
+				//dispbottom "[DBG] ¡Meta +"+.@goal+" alcanzada! Terminando batch.";
 				break;
 			}
 
 			// 4) Rotamos la copia refinada al final (solo si está equipada)
 			if (getequipid(.@slotSel) > 0) {
-				dispbottom "[DBG] Desequipando slotSel=" + .@slotSel;
+				//dispbottom "[DBG] Desequipando slotSel=" + .@slotSel;
 				unequip .@slotSel;
 				sleep2 600;
-			} else {
-				dispbottom "[DBG] No hay ítem en slotSel=" + .@slotSel + ", salto unequip";
 			}
 
 			.@procesadas++;
 		}
 
 		disable_items;
-		dispbottom "[DBG] Batch finalizado – procesadas="+.@procesadas;
+		//dispbottom "[DBG] Batch finalizado – procesadas="+.@procesadas;
 	}
 
 
@@ -119,8 +117,8 @@ RefinaUno:
 	else {
 		.@lvlA = 4; // grupo por defecto
 	}
-	dispbottom	"[Item Level] "+.@lvlA;
-	dispbottom	"[Item Type] "+.@tipo;
+	//dispbottom	"[Item Level] "+.@lvlA;
+	//dispbottom	"[Item Type] "+.@tipo;
 
 	while (getequiprefinerycnt(.@slot) < .@goal) {
 
@@ -129,30 +127,30 @@ RefinaUno:
 		else if (.@lvlA == 2)		set .@mat,	1011;
 		else						set .@mat,	984;
 
-		if (countitem(.@mat) < 1) { dispbottom "[Falta] "+getitemname(.@mat); break; }
+		if (countitem(.@mat) < 1) { //dispbottom "[Falta] "+getitemname(.@mat); break; }
 		delitem	.@mat,	1;
 
 		.@act	= getequiprefinerycnt(.@slot);
 		.@rate	= callsub(Rate,	.@tipo,	.@lvlA,	.@act);
 		.@randomnum = rand(100);
 
-		dispbottom	"[RATE] "+.@rate+" -> [RAND] "+.@randomnum;
+		//dispbottom	"[RATE] "+.@rate+" -> [RAND] "+.@randomnum;
 		if (.@randomnum < .@rate) {
 			successrefitem	.@slot;
-			dispbottom	"[OK] "+getitemname(.@id)+" -> +"+(.@act+1);
+			//dispbottom	"[OK] "+getitemname(.@id)+" -> +"+(.@act+1);
 		} else {
 			failedrefitem	.@slot;
-			dispbottom	"[ROTO] "+getitemname(.@id);
+			//dispbottom	"[ROTO] "+getitemname(.@id);
 			break;
 		}
 	}
 	// Mostrar refine final justo antes de salir
     .@finalRef = getequiprefinerycnt(.@slot);
-    dispbottom "[DBG] Refine final for idx=" + .@slot + " = +" + .@finalRef;
+    //dispbottom "[DBG] Refine final for idx=" + .@slot + " = +" + .@finalRef;
 
     // 2) Guardamos el refine final en .@lastRef
 	.@lastRef = getequiprefinerycnt(.@slot);
-	dispbottom "[DBG] Refine final en slot "+.@slot+" = +"+.@lastRef;
+	//dispbottom "[DBG] Refine final en slot "+.@slot+" = +"+.@lastRef;
     return .@lastRef;
 
 	//----------------------------------------------------------
