@@ -32,17 +32,22 @@ prontera,156,180,5	script	Refinador Batch	416,{
 
 	mes	"Ítem:^0080FF "+getitemname(.@idSel)+"^000000 (+"+.@curRef+")";
 	mes	"¿A qué nivel de refine quieres llegar?";
-	input	.@goal,	.@curRef+1,	10;
-	// — Validaciones de goal —
-    if (.@goal <= 0) {
-        mes "[Error] El nivel debe ser mayor que 0.";
+	input  .@goal,  0,  10;
+	//  — Cancelar si goal = 0 —
+    if (.@goal == 0) {
+        mes "[Refinador] Operación cancelada por usuario.";
         close;
     }
-    if (.@goal > 10) {
-        mes "[Error] El nivel máximo permitido es +10.";
+    //  — Sólo permitimos 1…10 —
+    if (.@goal < 1 || .@goal > 10) {
+        mes "[Error] El nivel debe estar entre +1 y +10.";
         close;
     }
-	if (.@goal <= .@curRef) { mes "Debe ser mayor al refine actual."; close; }
+    //  — Debe ser mayor que el refine actual —
+    if (.@goal <= .@curRef) {
+        mes "[Error] Debe ser mayor al refine actual (+". .@curRef +").";
+        close;
+    }
 
 	//----------------------------------------------------------
 	// 3) ¿Sólo equipado o todas las copias?
