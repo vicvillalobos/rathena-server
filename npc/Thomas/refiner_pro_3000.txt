@@ -111,7 +111,7 @@ RefinaUno:
 		delitem .@mat,1;
 
 		.@actual = getequiprefinerycnt(.@slot);
-		.@rate   = callsub Rate, .@tipo, .@lvlA, .@actual;
+		.@rate   = callsub( Rate, .@tipo, .@lvlA, .@actual );
 
 		if (rand(100) < .@rate) {
 			successrefitem .@slot;
