@@ -55,36 +55,32 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	//   Modo 2 – Refino en batch con límite fijo
 	//----------------------------------------------------------
 	if (.@mode == 2) {
+		// 1) Contamos cuántas copias hay
+		.@total = countitem(.@idSel);
 		.@procesadas = 0;
-		dispbottom "[DBG] Batch start – itemID="+.@idSel+" goal=+"+.@goal;
+		dispbottom "[DBG] Batch iniciado – itemID=" + .@idSel + 
+				" goal=+" + .@goal + 
+				" | copias encontradas=" + .@total;
 
 		enable_items;  // permitir equip dentro del NPC
 
-		// 1) Leer inventario completo una vez
-		getinventorylist;
-		dispbottom "[DBG] inventorylist_count="+@inventorylist_count;
+		// 2) Procesamos cada copia exactamente una vez
+		for (.@i = 0; .@i < .@total; .@i++) {
+			dispbottom "[DBG] Procesando copia " + (.@i+1) + "/" + .@total;
 
-		// 2) Recorrer cada slot y procesar sólo los que falten refinar
-		for (.@i = 0; .@i < @inventorylist_count; .@i++) {
-			// Sólo ítems del tipo y con plus < goal
-			if (@inventorylist_id[.@i] != .@idSel)                 continue;
-			if (@inventorylist_refine[.@i] >= .@goal)              continue;
-
-			.@invIdx = @inventorylist_idx[.@i];
-			dispbottom "[DBG] Copia idx="+.@invIdx+
-					" plus="+@inventorylist_refine[.@i];
-
-			// 3) Equipar por índice
-			equip .@invIdx;
+			// 2.1) Equipar por ID (el engine elige la primera copia disponible)
+			dispbottom "[DBG] Intentando equipar itemID=" + .@idSel;
+			equip .@idSel;
 			sleep2 200;
 			if (getequipid(.@slotSel) != .@idSel) {
-				dispbottom "[Error] Equip failed at idx="+.@invIdx;
+				dispbottom "[Error] No pudo equiparse itemID=" + .@idSel;
 				continue;
 			}
 			dispbottom "[DBG] Equip OK";
 
-			// 4) Refinar hasta goal
-			dispbottom "[DBG] Refinando copia idx="+.@invIdx;
+			// 2.2) Refinar la copia equipada
+			dispbottom "[DBG] Llamando RefinaUno(slot=" + .@slotSel + 
+					", goal=+" + .@goal + ")";
 			callsub(RefinaUno, .@slotSel, .@goal);
 			dispbottom "[DBG] Retornó de RefinaUno";
 
@@ -92,8 +88,12 @@ prontera,156,180,5	script	Refinador Batch	416,{
 		}
 
 		disable_items;
-		dispbottom "[DBG] Batch finished – procesadas="+.@procesadas;
+
+		// 3) Reporte final
+		dispbottom "[DBG] Batch finalizado – procesadas=" + .@procesadas + 
+				" de " + .@total;
 	}
+
 
 	mes	"[Refinador] Trabajo finalizado.";
 	close;
