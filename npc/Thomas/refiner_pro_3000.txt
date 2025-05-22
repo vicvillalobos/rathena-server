@@ -71,7 +71,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
 			}
 
 			// 2) Refinamos y capturamos el plus final
-			callsub(RefinaUno, .@slotSel, .@goal);
+			.@lastRef = callsub(RefinaUno, .@slotSel, .@goal);
 			dispbottom "[DBG] +"+.@lastRef+" alcanzado en esta copia";
 
 			// 3) Si llegamos al objetivo, rompemos y salimos
@@ -148,7 +148,7 @@ RefinaUno:
     // 2) Guardamos el refine final en .@lastRef
 	.@lastRef = getequiprefinerycnt(.@slot);
 	dispbottom "[DBG] Refine final en slot "+.@slot+" = +"+.@lastRef;
-    return;
+    return .@lastRef;
 
 	//----------------------------------------------------------
 	// ■ Rate – % de éxito
