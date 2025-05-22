@@ -7,7 +7,7 @@ prontera,150,180,4	script	TestShield	413,{
 	close;
 }
 
-prontera,152,180,4	script	DebugRefinable	1_M_SAGE,{
+prontera,152,180,4	script	DebugRefinable	414,{
 	.@slot = EQI_HAND_L;
 	.@id = getequipid(.@slot);
 	mes "ID: " + .@id;
