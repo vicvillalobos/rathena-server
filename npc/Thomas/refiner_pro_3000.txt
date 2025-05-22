@@ -165,7 +165,10 @@ Rate:
 	// Armas nivel 2
 	if (.@lvl == 2) {
 		switch (.@cur) {
-			case 0,1,2,3: return 100;
+			case 0: return 100;
+			case 1: return 100;
+			case 2: return 100;
+			case 3: return 100;
 			case 4: return 90;
 			case 5: return 70;
 			case 6: return 50;
@@ -178,7 +181,10 @@ Rate:
 	// Armas nivel 3
 	if (.@lvl == 3) {
 		switch (.@cur) {
-			case 0,1,2,3: return 100;
+			case 0: return 100;
+			case 1: return 100;
+			case 2: return 100;
+			case 3: return 100;
 			case 4: return 80;
 			case 5: return 60;
 			case 6: return 40;
@@ -190,7 +196,10 @@ Rate:
 	}
 	// Armas nivel 4
 	switch (.@cur) {
-		case 0,1,2,3: return 100;
+		case 0: return 100;
+		case 1: return 100;
+		case 2: return 100;
+		case 3: return 100;
 		case 4: return 70;
 		case 5: return 50;
 		case 6: return 30;
