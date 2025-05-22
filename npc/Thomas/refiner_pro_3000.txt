@@ -19,106 +19,34 @@ prontera,152,180,4	script	DebugRefinable	415,{
 
 prontera,154,180,5	script	Refinador PRO	416,{
 
-	mes "[Refinador PRO]";
-	mes "Voy a ayudarte a refinar tu equipo.";
-	next;
+		mes "[Refinador]";
+	mes "Estos son tus ítems refinables equipados:";
 
-	// Slots refinables estándares
-	setarray .@slots[0], EQI_HEAD_TOP, EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_GARMENT, EQI_SHOES;
+	setarray .@slots[0], EQI_ARMOR, EQI_HAND_R, EQI_HAND_L, EQI_SHOES, EQI_GARMENT;
 	set .@count, 0;
 
-	// Buscar ítems refinables
 	for (.@i = 0; .@i < getarraysize(.@slots); .@i++) {
-        .@slot = .@slots[.@i];
-        .@id = getequipid(.@slot);
+		.@slot = .@slots[.@i];
+		.@id = getequipid(.@slot);
 
-        if (.@id <= 0) continue;
-        if (getequipisenableref(.@slot) == 0) continue;
+		if (.@id <= 0) continue;
+		if (getequipisenableref(.@slot) == 0) continue;
 
-        .@refine = getequiprefinerycnt(.@slot);
-        set .@equipped_slot[.@count], .@slot;
-        set .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@refine + "]";
-        .@count++;
-    }
-
+		.@refine = getequiprefinerycnt(.@slot);
+		set .@equipped_slot[.@count], .@slot;
+		set .@equipped_name$[.@count], getitemname(.@id) + " [+" + .@refine + "]";
+		.@count++;
+	}
 
 	if (.@count == 0) {
-		mes "No tienes ningún ítem refinable equipado.";
+		mes "No tienes ningún ítem refinable en esos slots.";
 		close;
 	}
 
 	next;
-	mes "Selecciona el ítem que deseas refinar:";
+	mes "Selecciona un ítem:";
 	.@choice = select(.@equipped_name$) - 1;
-	.@selected_slot = .@equipped_slot[.@choice];
-	.@current_refine = getequiprefinerycnt(.@selected_slot);
 
-	mes "¿Hasta qué nivel deseas refinarlo?";
-	input .@target_refine, .@current_refine + 1, 10;
-
-	next;
-	mes "¿Quieres refinar solo este ítem o todos los equipados?";
-	.@mode = select("Solo este:Todos los refinables");
-
-	if (.@mode == 1) {
-		callsub RefinaItem, .@selected_slot, .@target_refine;
-	} else {
-		for (.@j = 0; .@j < .@count; .@j++) {
-			callsub RefinaItem, .@equipped_slot[.@j], .@target_refine;
-		}
-	}
-
-	mes "Refinamiento terminado.";
+	mes "Elegiste: " + .@equipped_name$[.@choice];
 	close;
-
-// ========== SUBPROCESO DE REFINADO ==========
-RefinaItem:
-	.@slot = getarg(0);
-	.@target = getarg(1);
-
-	.@id = getequipid(.@slot);
-	.@type = getiteminfo(.@id, ITEMINFO_TYPE);
-	.@ref = getequiprefinerycnt(.@slot);
-
-	while (.@ref < .@target) {
-		// Definir material requerido
-		if (.@type == IT_ARMOR)
-			.@mat = 985; // Elunium
-		else
-			.@mat = 984; // Oridecon
-
-		if (countitem(.@mat) < 1) {
-			dispbottom "Falta material: " + getitemname(.@mat);
-			return;
-		}
-
-		delitem .@mat, 1;
-		.@rate = callfunc("RefineRateOfficial", .@type, .@ref);
-		if (rand(100) < .@rate) {
-			successrefitem(.@slot);
-			.@ref++;
-			dispbottom "[ÉXITO] " + getitemname(.@id) + " ahora es +"+ .@ref;
-		} else {
-			failedrefitem(.@slot);
-			dispbottom "[FALLO] " + getitemname(.@id) + " fue destruido.";
-			return;
-		}
-	}
-	return;
-}
-
-// ========== RATES DE REFINAMIENTO ==========
-function	script	RefineRateOfficial	{
-	.@type = getarg(0);
-	.@ref  = getarg(1);
-
-	switch (.@ref) {
-		case 4: return (.@type == IT_ARMOR) ? 60 : 100;
-		case 5: return (.@type == IT_ARMOR) ? 40 : 100;
-		case 6: return (.@type == IT_ARMOR) ? 30 : 100;
-		case 7: return (.@type == IT_ARMOR) ? 20 : 60;
-		case 8: return (.@type == IT_ARMOR) ? 10 : 40;
-		case 9: return (.@type == IT_ARMOR) ? 5  : 20;
-		default: return 100;
-	}
 }
