@@ -1,0 +1,109 @@
+prontera,143,171,6	script	Refinador PRO	4_M_REPAIRMAN,{
+	mes "[Refinador PRO]";
+	mes "Estos son tus ítems refinables equipados:";
+
+	// Listar ítems equipados refinables
+	set .@count, 0;
+	for (.@i = EQI_HEAD_TOP; .@i <= EQI_SHOES; .@i++) {
+		if (!getequipisenableref(.@i)) continue;
+		set .@id, getequipid(.@i);
+		if (.@id > 0) {
+			setarray .@slots[.@count], .@i;
+			setarray .@names$[.@count], getitemname(.@id);
+			.@count++;
+		}
+	}
+	if (.@count == 0) {
+		mes "No tienes ítems refinables equipados.";
+		close;
+	}
+
+	next;
+	set .@select, select(.@names$) - 1;
+	set .@slot, .@slots[.@select];
+	set .@id, getequipid(.@slot);
+	set .@current, getequiprefinerycnt(.@slot);
+	mes "Seleccionaste: ^0000FF" + getitemname(.@id) + "^000000 (+" + .@current + ")";
+	mes "¿A qué nivel quieres refinarlo?";
+	input .@target, .@current+1, 10;
+
+	next;
+	mes "¿Quieres refinar solo este o todos los ítems equipados?";
+	next;
+	set .@modo, select("Sólo este ítem:Todos los equipados refinables");
+
+	if (.@modo == 1)
+		callsub L_Refina, .@slot, .@target;
+	else {
+		for (.@j = 0; .@j < .@count; .@j++)
+			callsub L_Refina, .@slots[.@j], .@target;
+	}
+
+	mes "Refinamiento completo.";
+	close;
+
+// =====================================================
+// SUB FUNCIÓN PARA REFINAR CON RATES Y MATERIALES
+// =====================================================
+L_Refina:
+	.@slot = getarg(0);
+	.@target = getarg(1);
+	.@id = getequipid(.@slot);
+	.@ref = getequiprefinerycnt(.@slot);
+	.@type = getiteminfo(.@id, ITEMINFO_TYPE);
+	.@level = getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+	.@mat_id = 0;
+
+	while (.@ref < .@target) {
+		// Asignar material según tipo de ítem
+		if (.@type == IT_ARMOR)
+			set .@mat_id, 985; // Elunium
+		else if (.@level == 1)
+			set .@mat_id, 1010; // Phracon
+		else if (.@level == 2)
+			set .@mat_id, 1011; // Emveretarcon
+		else if (.@level == 3 || .@level == 4)
+			set .@mat_id, 984; // Oridecon
+
+		// Verificar material
+		if (countitem(.@mat_id) < 1) {
+			dispbottom "No tienes el material necesario para refinar: " + getitemname(.@mat_id);
+			return;
+		}
+		delitem .@mat_id, 1;
+
+		// Determinar tasa de éxito
+		set .@rate, callfunc("RefineRate", .@level, .@type, .@ref);
+		if (rand(100) < .@rate) {
+			successrefitem .@slot;
+			set .@ref, .@ref + 1;
+			dispbottom "Refinado exitoso a +" + .@ref + " para " + getitemname(.@id);
+		} else {
+			failedrefitem .@slot;
+			dispbottom "Falló el refine. El ítem fue destruido.";
+			return;
+		}
+	}
+	return;
+}
+
+// =====================================================
+// FUNCIÓN PERSONALIZADA DE RATES SEGÚN TU IMAGEN
+// =====================================================
+function	script	RefineRate	{
+	// getarg(0)=level, getarg(1)=type, getarg(2)=ref actual
+	.@lvl = getarg(0);
+	.@type = getarg(1);
+	.@ref = getarg(2);
+
+	switch (.@ref) {
+		case 4: return (.@type == IT_ARMOR) ? 60 : (100); // +4 -> +5
+		case 5: return (.@type == IT_ARMOR) ? 40 : ((.@lvl == 4) ? 40 : ((.@lvl == 3) ? 50 : 100));
+		case 6: return (.@type == IT_ARMOR) ? 30 : ((.@lvl == 4) ? 30 : ((.@lvl == 3) ? 30 : ((.@lvl == 2) ? 60 : 100)));
+		case 7: return (.@type == IT_ARMOR) ? 20 : ((.@lvl == 4) ? 15 : ((.@lvl == 3) ? 20 : ((.@lvl == 2) ? 40 : 60)));
+		case 8: return (.@type == IT_ARMOR) ? 10 : ((.@lvl == 4) ? 10 : ((.@lvl == 3) ? 15 : ((.@lvl == 2) ? 20 : 40)));
+		case 9: return (.@type == IT_ARMOR) ? 5 : 20;
+		default: return 100;
+	}
+	return;
+}
