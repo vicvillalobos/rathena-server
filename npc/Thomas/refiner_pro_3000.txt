@@ -45,7 +45,7 @@ prontera,156,180,5	script	Refinador Batch	416,{
     }
     //  — Debe ser mayor que el refine actual —
     if (.@goal <= .@curRef) {
-        mes "Debe ser mayor al refine actual (+". .@curRef +").";
+        mes "Debe ser mayor al refine actual (+"+.@curRef +").";
         close;
     }
 
