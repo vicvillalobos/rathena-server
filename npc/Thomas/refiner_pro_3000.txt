@@ -3,16 +3,18 @@ prontera,143,171,6	script	Refinador PRO	813,{
 	mes "Estos son tus ítems refinables equipados:";
 
 	// Listar ítems equipados refinables
-	set .@count, 0;
-	for (.@i = EQI_HEAD_TOP; .@i <= EQI_SHOES; .@i++) {
-		if (!getequipisenableref(.@i)) continue;
-		set .@id, getequipid(.@i);
-		if (.@id > 0) {
-			setarray .@slots[.@count], .@i;
-			setarray .@names$[.@count], getitemname(.@id);
-			.@count++;
-		}
-	}
+    set .@count, 0;
+    for (.@i = EQI_HEAD_TOP; .@i <= EQI_SHOES; .@i++) {
+        set .@id, getequipid(.@i);
+        set .@type, getiteminfo(.@id, ITEMINFO_TYPE);
+        set .@lvl, getiteminfo(.@id, ITEMINFO_EQUIP_LEVEL);
+        if (.@id <= 0) continue;
+        if (.@type != IT_ARMOR && .@type != IT_WEAPON) continue; // Solo armaduras y armas
+        if (.@lvl < 1 || .@lvl > 4) continue; // Asegurarse que tenga nivel de refine válido
+        setarray .@slots[.@count], .@i;
+        setarray .@names$[.@count], getitemname(.@id);
+        .@count++;
+}
 	if (.@count == 0) {
 		mes "No tienes ítems refinables equipados.";
 		close;
