@@ -89,4 +89,11 @@ prontera,154,180,5	script	Refinador PRO	416,{
 	} else{
 		.@safe = 4;
 	}
+
+	mes .@refineitemid;
+	mes .@refinerycnt;
+	mes .@price;
+	mes .@material;
+	mes .@itemtype;
+	mes .@equip_lv;
 } // FIN NPC
