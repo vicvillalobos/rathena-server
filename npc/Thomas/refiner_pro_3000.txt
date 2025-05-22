@@ -33,6 +33,15 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	mes	"Ítem:^0080FF "+getitemname(.@idSel)+"^000000 (+"+.@curRef+")";
 	mes	"¿A qué nivel de refine quieres llegar?";
 	input	.@goal,	.@curRef+1,	10;
+	// — Validaciones de goal —
+    if (.@goal <= 0) {
+        mes "[Error] El nivel debe ser mayor que 0.";
+        close;
+    }
+    if (.@goal > 10) {
+        mes "[Error] El nivel máximo permitido es +10.";
+        close;
+    }
 	if (.@goal <= .@curRef) { mes "Debe ser mayor al refine actual."; close; }
 
 	//----------------------------------------------------------
