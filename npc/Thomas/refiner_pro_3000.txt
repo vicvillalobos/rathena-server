@@ -1,4 +1,4 @@
-prontera,143,171,6	script	Refinador PRO	4_M_REPAIRMAN,{
+prontera,143,171,6	script	Refinador PRO	813,{
 	mes "[Refinador PRO]";
 	mes "Estos son tus ítems refinables equipados:";
 
