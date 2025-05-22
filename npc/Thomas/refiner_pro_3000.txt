@@ -18,4 +18,10 @@ prontera,154,180,5	script	Refinador PRO	416,{
 		}
 		.@menu$ = .@menu$ + ":";
 	}
+	if (.@equipped == 0) {
+		mes "["+ .@npc_name$ +"]";
+		mes "I don't think I can refine any items you have...";
+		close;
+	}
+	.@part = .@indices[select(.@menu$)];
 } // FIN NPC
