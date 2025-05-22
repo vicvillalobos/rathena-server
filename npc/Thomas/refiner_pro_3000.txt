@@ -52,56 +52,69 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	callsub(RefinaUno,	.@slotSel,	.@goal);
 
 	//----------------------------------------------------------
-// 5) Refinar copias si se eligió “todos” (modo 2)
-//----------------------------------------------------------
-if (.@mode == 2) {
-    // 5.0) Debug: inicio de batch
-    dispbottom "[Refinador] Iniciando modo batch: ItemID=" + .@idSel + ", Objetivo +" + .@goal;
+	// 5) Refinar copias si se eligió “todos” (modo 2)
+	//----------------------------------------------------------
+	if (.@mode == 2) {
+		// Debug inicio
+		dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
 
-    // 5.1) Listar todas las posiciones de inventario con ese ID
-    getinventorylist;
-    setarray .@inv_slots[0], 0;
-    .@k = 0;
-    for (.@i = 0; .@i < @inventorylist_count; .@i++) {
-        if (@inventorylist_id[.@i] == .@idSel) {
-            .@inv_slots[.@k++] = @inventorylist_idx[.@i];
-        }
-    }
-    dispbottom "[Refinador] Encontradas " + .@k + " copias para procesar";
+		.@procesadas = 0;
+		// Repetir mientras queden ítems en inventario o equipados
+		while (countitem(.@idSel) > 0) {
+			dispbottom "[DBG] countitem(" + .@idSel + ")=" + countitem(.@idSel);
 
-    // 5.2) Recorrer cada slot guardado
-    .@procesadas = 0;
-    for (.@i = 0; .@i < .@k; .@i++) {
-        .@invIdx = .@inv_slots[.@i];
-        dispbottom "[Refinador] Iteración " + (.@i+1) + " / " + .@k + " – slotIdx=" + .@invIdx;
+			// 1) Desequipar lo que haya en slotSel
+			dispbottom "[DBG] Pre-unequip slotSel=" + .@slotSel + " equipedID=" + getequipid(.@slotSel);
+			if (getequipid(.@slotSel)) {
+				unequip .@slotSel;
+				sleep2 200;  // 200 ms para que el servidor procese
+				dispbottom "[DBG] Post-unequip equipedID=" + getequipid(.@slotSel);
+			}
 
-        // 5.2.1) Desequipar equipo actual si lo hay
-        if (getequipid(.@slotSel)) {
-            dispbottom "[Refinador] Desequipando slotSel=" + .@slotSel;
-            unequip .@slotSel;
-            sleep2 500;  // pausa 500 ms para asegurar que el servidor procese la des-equipación :contentReference[oaicite:0]{index=0}
-        }
+			// 2) Listar inventario
+			getinventorylist;
+			dispbottom "[DBG] inventorylist_count=" + @inventorylist_count;
+			.@found = 0;
 
-        // 5.2.2) Intentar equipar la copia en inventario
-        dispbottom "[Refinador] Equipando copia desde idx=" + .@invIdx;
-        equip .@invIdx;
-        sleep2 500;  // esperamos un poco para que el equip se confirme
-        if (getequipid(.@slotSel) != .@idSel) {
-            dispbottom "[Error] No se pudo equipar copia en idx=" + .@invIdx;
-            continue;  // pasamos a la siguiente
-        }
-        dispbottom "[Refinador] Equipado correctamente";
+			// 3) Buscar y equipar la primera copia disponible
+			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+				dispbottom "[DBG] slot[" + .@i + "] id=" + @inventorylist_id[.@i] + " idx=" + @inventorylist_idx[.@i];
+				if (@inventorylist_id[.@i] != .@idSel) continue;
 
-        // 5.2.3) Llamar al subproceso de refinado para este slot
-        dispbottom "[Refinador] Refinando nivel +" + .@goal;
-        callsub(RefinaUno, .@slotSel, .@goal);
-        .@procesadas += 1;
-        dispbottom "[Refinador] Refinado completado para idx=" + .@invIdx;
-    }
+				.@invIdx = @inventorylist_idx[.@i];
+				dispbottom "[DBG] Trying equip invIdx=" + .@invIdx;
+				equip .@invIdx;
+				sleep2 200;
+				dispbottom "[DBG] After equip, slotSel has=" + getequipid(.@slotSel);
 
-    // 5.3) Fin de batch
-    dispbottom "[Refinador] Batch finalizado: " + .@procesadas + " copia(s) procesada(s)";
-}
+				if (getequipid(.@slotSel) == .@idSel) {
+					dispbottom "[DBG] Equip OK at invIdx=" + .@invIdx;
+					.@found = 1;
+					break;
+				} else {
+					dispbottom "[DBG] Equip FAILED at invIdx=" + .@invIdx;
+				}
+			}
+
+			// 4) Si no encontramos copia, salimos
+			if (!.@found) {
+				dispbottom "[DBG] No equipable copy found → exiting batch";
+				break;
+			}
+
+			// 5) Refinar la copia ya equipada
+			dispbottom "[DBG] Calling RefinaUno on slotSel=" + .@slotSel;
+			callsub(RefinaUno, .@slotSel, .@goal);
+			dispbottom "[DBG] Returned from RefinaUno";
+
+			.@procesadas += 1;
+			dispbottom "[DBG] Copies processed so far=" + .@procesadas;
+		}
+
+		// Fin de batch
+		dispbottom "[DBG] Batch finished – total processed=" + .@procesadas;
+	}
+
 
 	mes	"[Refinador] Trabajo finalizado.";
 	close;
