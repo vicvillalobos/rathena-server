@@ -21,7 +21,7 @@ set .@maxitems,getarraysize(.@randomitem);
     mes "Mis servicios cuestan ^FF0000$1,000 Cash points^000000";
 	mes "Que deseas hacer?";
 	next;
-	switch(select("Cambia mi coin:Que es esto?:Nada, gracias."))	{
+	switch(select("Cambiar 1000 CP por un item:Que es esto?:Nada, gracias."))	{
 
 case 1:
 	if(#CASHPOINTS >= .@cashcant)			{
