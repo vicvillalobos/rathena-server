@@ -55,38 +55,54 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	//   Modo 2 – Refino en batch con límite fijo
 	//----------------------------------------------------------
 	if (.@mode == 2) {
-    .@procesadas = 0;
-    dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
+		.@procesadas = 0;
+		dispbottom "[DBG] Batch start – itemID=" + .@idSel + " goal=+" + .@goal;
 
-    enable_items;
+		enable_items;  // permite equipar dentro del NPC :contentReference[oaicite:0]{index=0}
 
-    while (true) {
-        // 1) Escaneo fresco del inventario
-        getinventorylist;
-        .@found = 0;
-        for (.@i = 0; .@i < @inventorylist_count; .@i++) {
-            if (@inventorylist_id[.@i] == .@idSel
-             && @inventorylist_refine[.@i] < .@goal) {
-                .@found = 1;
-                break;
-            }
-        }
-        if (!.@found) {
-            dispbottom "[DBG] No quedan copias por refinar → saliendo";
-            break;
-        }
+		while (true) {
+			// 1) Leemos inventario fresco y buscamos alguna copia < goal
+			getinventorylist;
+			dispbottom "[DBG] inventorylist_count=" + @inventorylist_count;
+			.@found = 0;
+			for (.@i = 0; .@i < @inventorylist_count; .@i++) {
+				if (@inventorylist_id[.@i]    == .@idSel
+				&& @inventorylist_refine[.@i] <  .@goal) {
+					.@found = 1;
+					break;
+				}
+			}
+			if (!.@found) {
+				dispbottom "[DBG] No quedan copias < +"+.@goal+" → saliendo batch";
+				break;
+			}
 
-        // 2) Equip + refina esa copia
-        equip .@idSel; sleep2 200;
-        if (getequipid(.@slotSel) != .@idSel) break;
-        callsub(RefinaUno, .@slotSel, .@goal);
-        unequip .@slotSel; sleep2 200;
-        .@procesadas++;
-    }
+			// 2) Equipar la PRIMERA copia que siga por debajo del objetivo
+			dispbottom "[DBG] Equipando siguiente copia (ID="+.@idSel+")";
+			equip .@idSel;  // siempre equipa la primera instancia :contentReference[oaicite:1]{index=1}
+			sleep2 200;
+			if (getequipid(.@slotSel) != .@idSel) {
+				dispbottom "[Error] Falló equip ID="+.@idSel+"; abortando";
+				break;
+			}
+			dispbottom "[DBG] Equip OK";
 
-    disable_items;
-    dispbottom "[DBG] Batch finalizado – procesadas=" + .@procesadas;
-}
+			// 3) Refinar esa copia hasta el objetivo
+			dispbottom "[DBG] Llamando RefinaUno(slot="+.@slotSel+", goal=+"+.@goal+")";
+			callsub(RefinaUno, .@slotSel, .@goal);
+			dispbottom "[DBG] Retornó de RefinaUno";
+
+			// 4) Desequipar para rotar esta copia al final del inventario
+			dispbottom "[DBG] Unequip para mover +"+getequiprefinerycnt(.@slotSel)+" al fondo";
+			unequip .@slotSel;
+			sleep2 200;
+
+			.@procesadas++;
+		}
+
+		disable_items;
+		dispbottom "[DBG] Batch finalizado – procesadas=" + .@procesadas;
+	}
 
 
 	mes	"[Refinador] Trabajo finalizado.";
@@ -96,10 +112,10 @@ prontera,156,180,5	script	Refinador Batch	416,{
 	// ■ RefinaUno – refina la pieza equipada
 	//----------------------------------------------------------
 RefinaUno:
-	.@slot	= getarg(0);
-	.@goal	= getarg(1);
-	.@id	= getequipid(.@slot);
-	if (!.@id)	return;
+	.@slot = getarg(0);
+    .@goal = getarg(1);
+    .@id   = getequipid(.@slot);
+    if (!.@id) return;
 
 	.@tipo = getiteminfo(.@id, ITEMINFO_TYPE);
 	if (.@tipo == 5) {    // 5 → arma
@@ -138,8 +154,12 @@ RefinaUno:
 			break;
 		}
 	}
-	if (getequipid(.@slot) == .@id)	unequip	.@slot;
-	return;
+	// Mostrar refine final justo antes de salir
+    .@finalRef = getequiprefinerycnt(.@slot);
+    dispbottom "[DBG] Refine final for idx=" + .@slot + " = +" + .@finalRef;
+
+    if (getequipid(.@slot) == .@id) unequip .@slot;
+    return;
 
 	//----------------------------------------------------------
 	// ■ Rate – % de éxito
