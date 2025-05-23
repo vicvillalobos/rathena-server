@@ -3,9 +3,7 @@ prontera,150,150,5	script	ResetHomúnculo	100,{
     mes "¿Quieres resetear los stats de tu homúnculo?";
     next;
 
-    // 1) Obtenemos el objeto homúnculo activo del jugador
-    set .@hd, getunitlist(UNIT_HOM,0);
-    if (.@hd == 0) {
+    if (checkhomcall() != 0) {
         mes "No tienes homúnculo activo.";
         close;
     }
